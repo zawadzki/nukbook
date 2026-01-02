@@ -1,0 +1,82 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-nukbook}
+      POSTGRES_USER: ${POSTGRES_USER:-nukbook}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nukbook}
+    volumes:
+      - nukbook_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  api:
+    build:
+      context: ./apps/api
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://nukbook:nukbook@db:5432/nukbook}
+      JWT_SECRET: ${JWT_SECRET:-dev-change-me}
+      JWT_ISSUER: ${JWT_ISSUER:-nukbook}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-nukbook-web}
+      WEB_ORIGIN: ${WEB_ORIGIN:-https://nukbook.local.dev}
+    volumes:
+      - ./apps/api:/app
+    user: "${UID:-1000}:${GID:-1000}"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+    networks:
+      default:
+        aliases:
+          - nukbook-api
+      proxy: {}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+      - traefik.http.routers.nukbook-api.rule=Host(`api-nukbook.local.dev`)
+      - traefik.http.routers.nukbook-api.entrypoints=websecure
+      - traefik.http.routers.nukbook-api.tls=true
+      - traefik.http.services.nukbook-api.loadbalancer.server.port=8000
+
+  web:
+    build:
+      context: ./apps/web
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api-nukbook.local.dev}
+      API_INTERNAL_URL: ${API_INTERNAL_URL:-http://nukbook-api:8000}
+    volumes:
+      - ./apps/web:/app
+      - nukbook_web_node_modules:/app/node_modules
+    depends_on:
+      - api
+    command: >
+      sh -lc "corepack enable && pnpm dev --hostname 0.0.0.0 --port 3000"
+    networks:
+      default: {}
+      proxy: {}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+      - traefik.http.routers.nukbook-web.rule=Host(`nukbook.local.dev`)
+      - traefik.http.routers.nukbook-web.entrypoints=websecure
+      - traefik.http.routers.nukbook-web.tls=true
+      - traefik.http.services.nukbook-web.loadbalancer.server.port=3000
+
+volumes:
+  nukbook_db:
+  nukbook_web_node_modules:
+
+networks:
+  proxy:
+    external: true
+    name: proxy

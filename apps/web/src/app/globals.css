@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import "@catppuccin/tailwindcss/macchiato.css";
+@plugin "daisyui" {
+  themes: false;
+}
+
+@plugin "./catppuccinTheme.latte.ts";

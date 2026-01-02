@@ -1,0 +1,107 @@
+############################################
+# OS / Editor
+############################################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.iml
+
+############################################
+# Environment / Secrets
+############################################
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.crt
+*.p12
+
+############################################
+# Logs
+############################################
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################################
+# Docker
+############################################
+**/.docker/
+docker-compose.override.yml
+
+############################################
+# Python (apps/api)
+############################################
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+
+# Virtualenvs
+.venv/
+venv/
+ENV/
+env/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.coverage
+coverage.xml
+htmlcov/
+.cache/
+
+# FastAPI / Alembic
+apps/api/.pytest_cache/
+apps/api/.mypy_cache/
+apps/api/.ruff_cache/
+
+# Uploaded/generated media (keep folder out of git)
+apps/api/media/
+
+############################################
+# Node / Next.js (apps/web)
+############################################
+node_modules/
+**/node_modules/
+
+# Next build output
+.next/
+out/
+.turbo/
+
+# Caches
+.eslintcache
+*.tsbuildinfo
+
+# Local Next env files
+apps/web/.env.local
+apps/web/.env.*.local
+
+############################################
+# pnpm
+############################################
+.pnpm-store/
+**/.pnpm-store/
+
+############################################
+# Misc
+############################################
+tmp/
+temp/
