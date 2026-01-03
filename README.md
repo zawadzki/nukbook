@@ -1,7 +1,9 @@
-# nukBook
+<div align="center"><img src="./preview.png" width="600" alt="nukBook"></div>
 
-Goodreads inspired social book-focused app with reviews, shelves, and discovery.
-Used as excuse to test drive FastAPI + Next.js stack.
+<h1 align="center" style="margin-top:0;">nukBook</h1>
+
+<p align="center">Goodreads inspired social book-focused app with reviews, shelves, and discovery.
+Used as excuse to test drive FastAPI + Next.js stack.</p>
 
 ## Stack
 
