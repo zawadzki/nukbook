@@ -4,6 +4,7 @@ import {NavAuth} from "@/components/NavAuth";
 import NavSearch from "@/components/NavSearch";
 import ToastHost from "@/components/ToastHost";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
+import SidebarPrimaryMenu from "@/components/SidebarPrimaryMenu";
 import SidebarUserMenu from "@/components/SidebarUserMenu";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -32,10 +33,7 @@ export default function RootLayout({
               nukBook
             </a>
           </div>
-          <ul className="menu menu-xl rounded-box w-full">
-            <li><a href="/books">Books</a></li>
-            <li><a href="/authors">Authors</a></li>
-          </ul>
+          <SidebarPrimaryMenu/>
           <SidebarUserMenu/>
         </header>
         <div className="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto">

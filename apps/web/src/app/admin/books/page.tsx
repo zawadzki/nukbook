@@ -174,7 +174,7 @@ export default function AdminBooksPage() {
   }
 
   useEffect(() => {
-    load();
+    void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dq]);
 
@@ -369,137 +369,146 @@ export default function AdminBooksPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-xl font-semibold">Admin · Books</h1>
+    <div className="flex flex-wrap space-y-4 gap-5">
+      <div className="flex flex-col w-full">
+        <div className="flex items-center">
+          <h1 className="text-xl font-semibold">Admin · Books</h1>
+        </div>
+
+        <div className="flex items-center">
+          <input
+            className="input w-full max-w-md"
+            placeholder="Search books…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+        </div>
       </div>
+      <div className="flex flex-col flex-1">
+        <Panel as="form" onSubmit={onCreate} className="space-y-2 w-full" padding="sm">
+          <div className="font-medium">Add book</div>
 
-      <div className="flex items-center gap-3">
-        <input
-          className="input w-full max-w-md"
-          placeholder="Search books…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Title</legend>
+            <input
+              className="input w-full"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              disabled={saving}
+            />
+          </fieldset>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Published year</legend>
+            <input
+              className="input w-full"
+              placeholder="Published year"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              disabled={saving}
+            />
+          </fieldset>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Description</legend>
+            <textarea
+              className="input h-24 w-full"
+              placeholder="Description"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              disabled={saving}
+            />
+            <span className="label">Optional</span>
+          </fieldset>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Authors</legend>
+            <AuthorPicker
+              value={authorValue}
+              onChangeAction={setAuthorValue}
+              onAuthErrorAction={() => handleAuthError("/admin/books")}
+              onForbiddenAction={() => router.replace("/")}
+            />
+          </fieldset>
+
+          <div className="divider"></div>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Tags</legend>
+            <TagPicker
+              value={tagValue}
+              onChangeAction={setTagValue}
+              onAuthErrorAction={() => handleAuthError("/admin/books")}
+              onForbiddenAction={() => router.replace("/")}
+            />
+            <div className="mt-2 flex flex-wrap gap-2">
+              <input
+                className="input w-full max-w-sm"
+                placeholder="New tag…"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                disabled={tagBusy || saving}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCreateTag}
+                disabled={tagBusy || saving || !newTag.trim()}
+              >
+                {tagBusy ? "Adding…" : "Add tag"}
+              </Button>
+            </div>
+          </fieldset>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Genres</legend>
+            <GenrePicker
+              value={genreValue}
+              onChangeAction={setGenreValue}
+              onAuthErrorAction={() => handleAuthError("/admin/books")}
+              onForbiddenAction={() => router.replace("/")}
+            />
+            <div className="mt-2 flex flex-wrap gap-2">
+              <input
+                className="input w-full max-w-sm"
+                placeholder="New genre…"
+                value={newGenre}
+                onChange={(e) => setNewGenre(e.target.value)}
+                disabled={genreBusy || saving}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCreateGenre}
+                disabled={genreBusy || saving || !newGenre.trim()}
+              >
+                {genreBusy ? "Adding…" : "Add genre"}
+              </Button>
+            </div>
+          </fieldset>
+
+          <div className="divider"></div>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Cover image</legend>
+            <input
+              key={coverInputKey}
+              type="file"
+              accept="image/*"
+              onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+              disabled={saving}
+              className="block file-input"
+            />
+          </fieldset>
+
+          <div className="divider"></div>
+
+          <Button type="submit" variant="outline" className="w-full" disabled={saving || !title.trim()}>
+            {saving ? "Saving…" : "Create"}
+          </Button>
+        </Panel>
       </div>
-
-      <Panel as="form" onSubmit={onCreate} className="space-y-2 max-w-2xl" padding="sm">
-        <div className="font-medium">Add book</div>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Title</legend>
-          <input
-            className="input w-full"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            disabled={saving}
-          />
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Published year</legend>
-          <input
-            className="input w-full"
-            placeholder="Published year"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            disabled={saving}
-          />
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Description</legend>
-          <textarea
-            className="input h-24 w-full"
-            placeholder="Description"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            disabled={saving}
-          />
-          <span className="label">Optional</span>
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Authors</legend>
-          <AuthorPicker
-            value={authorValue}
-            onChangeAction={setAuthorValue}
-            onAuthErrorAction={() => handleAuthError("/admin/books")}
-            onForbiddenAction={() => router.replace("/")}
-          />
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Tags</legend>
-          <TagPicker
-            value={tagValue}
-            onChangeAction={setTagValue}
-            onAuthErrorAction={() => handleAuthError("/admin/books")}
-            onForbiddenAction={() => router.replace("/")}
-          />
-          <div className="mt-2 flex flex-wrap gap-2">
-            <input
-              className="input w-full max-w-sm"
-              placeholder="New tag…"
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-              disabled={tagBusy || saving}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCreateTag}
-              disabled={tagBusy || saving || !newTag.trim()}
-            >
-              {tagBusy ? "Adding…" : "Add tag"}
-            </Button>
-          </div>
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Genres</legend>
-          <GenrePicker
-            value={genreValue}
-            onChangeAction={setGenreValue}
-            onAuthErrorAction={() => handleAuthError("/admin/books")}
-            onForbiddenAction={() => router.replace("/")}
-          />
-          <div className="mt-2 flex flex-wrap gap-2">
-            <input
-              className="input w-full max-w-sm"
-              placeholder="New genre…"
-              value={newGenre}
-              onChange={(e) => setNewGenre(e.target.value)}
-              disabled={genreBusy || saving}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCreateGenre}
-              disabled={genreBusy || saving || !newGenre.trim()}
-            >
-              {genreBusy ? "Adding…" : "Add genre"}
-            </Button>
-          </div>
-        </fieldset>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Cover image</legend>
-          <input
-            key={coverInputKey}
-            type="file"
-            accept="image/*"
-            onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
-            disabled={saving}
-            className="block"
-          />
-        </fieldset>
-
-        <Button type="submit" variant="outline" disabled={saving || !title.trim()}>
-          {saving ? "Saving…" : "Create"}
-        </Button>
-      </Panel>
 
       {loading && <div className="text-sm opacity-70">Loading…</div>}
       {err && (
@@ -508,7 +517,7 @@ export default function AdminBooksPage() {
         </Panel>
       )}
 
-      <div className="space-y-3">
+      <div className="flex flex-col flex-1 space-y-3">
         {items.map((b) => {
           const isEditing = editingId === b.id;
           const busy = rowBusyId === b.id;

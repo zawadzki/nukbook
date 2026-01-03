@@ -241,61 +241,68 @@ export default function AdminAuthorsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-xl font-semibold">Admin · Authors</h1>
-      </div>
+    <div className="flex flex-wrap space-y-4 gap-5">
+      <div className="flex flex-col w-full">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold">Admin · Authors</h1>
+        </div>
 
-      <div className="flex items-center gap-3 max-w-2xl">
-        <input
-          className="input w-full"
-          placeholder="Search authors…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
-      </div>
-
-      <Panel as="form" onSubmit={onCreate} className="space-y-2 max-w-2xl" padding="sm">
-        <div className="font-medium">Add author</div>
-
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Name</legend>
+        <div className="flex items-center gap-3 max-w-2xl">
           <input
             className="input w-full"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={saving}
+            placeholder="Search authors…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
           />
-        </fieldset>
+        </div>
+      </div>
+      <div className="flex flex-col flex-1">
+        <Panel as="form" onSubmit={onCreate} className="space-y-2 w-full" padding="sm">
+          <div className="font-medium">Add author</div>
 
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Author's bio</legend>
-          <textarea
-            className="textarea h-24 w-full"
-            placeholder="Bio (optional)"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            disabled={saving}
-          />
-        </fieldset>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Name</legend>
+            <input
+              className="input w-full"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={saving}
+            />
+          </fieldset>
 
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Photo</legend>
-          <input
-            key={photoInputKey}
-            type="file"
-            accept="image/*"
-            className="file-input w-full"
-            onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
-            disabled={saving}
-          />
-        </fieldset>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Author's bio</legend>
+            <textarea
+              className="textarea h-24 w-full"
+              placeholder="Bio (optional)"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              disabled={saving}
+            />
+          </fieldset>
 
-        <Button type="submit" variant="outline" disabled={saving || !name.trim()}>
-          {saving ? "Saving…" : "Create"}
-        </Button>
-      </Panel>
+          <div className="divider"></div>
+
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Photo</legend>
+            <input
+              key={photoInputKey}
+              type="file"
+              accept="image/*"
+              className="file-input w-full"
+              onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
+              disabled={saving}
+            />
+          </fieldset>
+
+          <div className="divider"></div>
+
+          <Button type="submit" variant="outline" className="w-full" disabled={saving || !name.trim()}>
+            {saving ? "Saving…" : "Create"}
+          </Button>
+        </Panel>
+      </div>
 
       {loading && <div className="text-sm opacity-70">Loading…</div>}
       {err && (
@@ -304,7 +311,7 @@ export default function AdminAuthorsPage() {
         </Panel>
       )}
 
-      <div className="space-y-3">
+      <div className="flex flex-col flex-1 space-y-3">
         {items.map((a) => {
           const isEditing = editingId === a.id;
           const busy = rowBusyId === a.id;

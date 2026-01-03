@@ -1,13 +1,33 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getToken } from "@/lib/auth";
 import { usePendingRequestCount } from "@/hooks/usePendingRequestCount";
+import { getActiveHref } from "@/components/sidebarNavUtils";
 
 export default function SidebarUserMenu() {
   const token = useMemo(() => getToken(), []);
   const [mounted, setMounted] = useState(false);
   const pendingCount = usePendingRequestCount(token);
+  const pathname = usePathname();
+  const primaryLinks = [
+    { href: "/me", label: "Profile" },
+    { href: "/shelves", label: "My Shelves" },
+    { href: "/discover", label: "Discover" },
+  ];
+  const secondaryLinks = [
+    { href: "/me/requests", label: "Requests" },
+    { href: "/me/settings", label: "Settings" },
+  ];
+  const activeHref = useMemo(
+    () =>
+      getActiveHref(
+        [...primaryLinks, ...secondaryLinks].map((link) => link.href),
+        pathname,
+      ),
+    [pathname],
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -18,17 +38,33 @@ export default function SidebarUserMenu() {
   return (
     <>
       <ul className="menu menu-xl rounded-box w-full">
-        <li><a href="/me">Profile</a></li>
-        <li><a href="/shelves">My Shelves</a></li>
-        <li><a href="/discover">Discover</a></li>
+        {primaryLinks.map((link) => (
+          <li key={link.href}>
+            <a
+              href={link.href}
+              className={activeHref === link.href ? "menu-active" : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
       </ul>
       <ul className="menu menu-xl rounded-box w-full">
-        <li>
-          <a href="/me/requests">
-            Requests{pendingCount ? ` (${pendingCount})` : ""}
-          </a>
-        </li>
-        <li><a href="/me/settings">Settings</a></li>
+        {secondaryLinks.map((link) => (
+          <li key={link.href}>
+            <a
+              href={link.href}
+              className={activeHref === link.href ? "menu-active" : undefined}
+            >
+              {link.label}
+              {link.href === "/me/requests"
+                ? pendingCount
+                  ? ` (${pendingCount})`
+                  : ""
+                : ""}
+            </a>
+          </li>
+        ))}
       </ul>
     </>
   );
