@@ -72,7 +72,10 @@ def similar_books(
     )
 
     candidates = hydrate_books(db.execute(stmt).all())
-    scored = [(b, score_candidate(b, author_ids, tag_ids, genre_ids)) for b in candidates]
+    scored = [
+        (b, score_candidate(b, author_ids, tag_ids, genre_ids) + (b.rating_avg or 0.0) / 5.0)
+        for b in candidates
+    ]
     scored.sort(key=lambda x: x[1], reverse=True)
 
     out = []
