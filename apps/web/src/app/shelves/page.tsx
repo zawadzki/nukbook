@@ -7,6 +7,7 @@ import { pushToast } from "@/lib/toast";
 import { TrashIcon, PencilSquareIcon, XMarkIcon, CheckIcon } from "@heroicons/react/24/outline";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type Shelf = {
   id: number;
@@ -230,7 +231,7 @@ export default function ShelvesPage() {
                                 <Button
                                     onClick={() => saveEdit(s.id)}
                                     disabled={busy}
-                                    variant="mantle"
+                                    variant="success"
                                     size="icon"
                                     title="Save"
                                     aria-label="Save"
@@ -240,7 +241,7 @@ export default function ShelvesPage() {
                                 <Button
                                     onClick={cancelEdit}
                                     disabled={busy}
-                                    variant="mantle"
+                                    variant="error"
                                     size="icon"
                                     title="Cancel"
                                     aria-label="Cancel"
@@ -291,7 +292,10 @@ export default function ShelvesPage() {
 
                           {!s.is_system && !isEditing ? (
                               <Button
-                                  onClick={() => deleteShelf(s.id)}
+                                  onClick={() => {
+                                    const el = document.getElementById(`delete-shelf-${s.id}`) as HTMLDialogElement | null;
+                                    el?.showModal();
+                                  }}
                                   disabled={busy}
                                   variant="error"
                                   size="icon"
@@ -300,6 +304,17 @@ export default function ShelvesPage() {
                               >
                                 <TrashIcon className="h-5 w-5"/>
                               </Button>
+                          ) : null}
+                          {!s.is_system ? (
+                            <ConfirmDialog
+                              id={`delete-shelf-${s.id}`}
+                              title="Delete shelf"
+                              description={`Delete "${s.name}"? This cannot be undone.`}
+                              confirmLabel="Delete"
+                              confirmVariant="error"
+                              onConfirmAction={() => deleteShelf(s.id)}
+                              busy={busy}
+                            />
                           ) : null}
                         </div>
                       </div>

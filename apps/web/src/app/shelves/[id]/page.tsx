@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import Panel from "@/components/Panel";
 import BookCover from "@/components/BookCover";
 import {ChevronLeftIcon} from "@heroicons/react/16/solid";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type Shelf = { id: number; name: string; is_system: boolean; visibility: "public" | "followers" | "private" };
 type Book = {
@@ -327,7 +328,10 @@ export default function ShelfPage({
               </div>
 
                 <Button
-                  onClick={() => removeBook(b.id)}
+                  onClick={() => {
+                    const el = document.getElementById(`remove-shelf-book-${b.id}`) as HTMLDialogElement | null;
+                    el?.showModal();
+                  }}
                   disabled={busy}
                   variant="error"
                   size="icon"
@@ -336,6 +340,15 @@ export default function ShelfPage({
                 >
                   <TrashIcon className="h-5 w-5" />
                 </Button>
+                <ConfirmDialog
+                  id={`remove-shelf-book-${b.id}`}
+                  title="Remove from shelf"
+                  description={`Remove "${b.title}" from this shelf?`}
+                  confirmLabel="Remove"
+                  confirmVariant="warning"
+                  onConfirmAction={() => removeBook(b.id)}
+                  busy={busy}
+                />
               </div>
             </Panel>
           ))}

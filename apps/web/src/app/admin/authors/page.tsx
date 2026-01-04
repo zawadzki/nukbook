@@ -9,6 +9,7 @@ import { handleAdminError } from "@/lib/adminErrors";
 import { mediaUrl } from "@/lib/media";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type AuthorRow = {
   id: number;
@@ -206,8 +207,6 @@ export default function AdminAuthorsPage() {
   }
 
   async function onDelete(a: AuthorRow) {
-    if (!confirm(`Delete author "${a.name}"?`)) return;
-
     setErr(null);
     setRowBusyId(a.id);
 
@@ -326,7 +325,7 @@ export default function AdminAuthorsPage() {
                       <img
                         src={mediaUrl(a.photo_url) ?? ""}
                         alt={`${a.name} portrait`}
-                        className="h-12 w-12 rounded border object-cover"
+                        className="h-12 w-12 rounded object-cover"
                       />
                     ) : (
                       <div className="flex h-12 w-12 items-center justify-center rounded border text-[10px] opacity-60">
@@ -344,7 +343,7 @@ export default function AdminAuthorsPage() {
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
-                          onUploadPhoto(a.id, file);
+                          void onUploadPhoto(a.id, file);
                           e.currentTarget.value = "";
                         }}
                       />
@@ -369,7 +368,7 @@ export default function AdminAuthorsPage() {
                       <div className="opacity-70 text-sm">Bio</div>
                       {isEditing ? (
                         <textarea
-                          className="border rounded px-2 py-1 w-full min-h-[70px]"
+                          className="border rounded px-2 py-1 w-full min-h-17.5"
                           value={editBio}
                           onChange={(e) => setEditBio(e.target.value)}
                           disabled={busy}
@@ -385,21 +384,39 @@ export default function AdminAuthorsPage() {
                 <div className="flex gap-2">
                   {isEditing ? (
                     <>
-                      <Button onClick={() => saveEdit(a.id)} disabled={busy || !editName.trim()} type="button" variant="outline" size="sm">
-                        {busy ? "Saving…" : "Save"}
-                      </Button>
-                      <Button onClick={cancelEdit} disabled={busy} type="button" variant="outline" size="sm">
+                      <Button onClick={cancelEdit} disabled={busy} type="button" variant="info" size="sm">
                         Cancel
+                      </Button>
+                      <Button onClick={() => saveEdit(a.id)} disabled={busy || !editName.trim()} type="button" variant="success" size="sm">
+                        {busy ? "Saving…" : "Save"}
                       </Button>
                     </>
                   ) : (
                     <>
-                      <Button onClick={() => startEdit(a)} disabled={busy} type="button" variant="outline" size="sm">
+                      <Button onClick={() => startEdit(a)} disabled={busy} type="button" variant="info" size="sm">
                         Edit
                       </Button>
-                      <Button onClick={() => onDelete(a)} disabled={busy} type="button" variant="outline" size="sm">
+                      <Button
+                        onClick={() => {
+                          const el = document.getElementById(`delete-author-${a.id}`) as HTMLDialogElement | null;
+                          el?.showModal();
+                        }}
+                        disabled={busy}
+                        type="button"
+                        variant="error"
+                        size="sm"
+                      >
                         {busy ? "…" : "Delete"}
                       </Button>
+                      <ConfirmDialog
+                        id={`delete-author-${a.id}`}
+                        title="Delete author"
+                        description={`Delete "${a.name}"? This cannot be undone.`}
+                        confirmLabel="Delete"
+                        confirmVariant="error"
+                        onConfirmAction={() => onDelete(a)}
+                        busy={busy}
+                      />
                     </>
                   )}
                 </div>

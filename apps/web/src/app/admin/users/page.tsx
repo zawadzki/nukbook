@@ -118,7 +118,7 @@ export default function AdminUsersPage() {
                 <label className="flex items-center gap-2">
                   <span className="opacity-70">Role</span>
                   <select
-                    className="select select-sm"
+                    className="select select-xs"
                     value={u.role}
                     onChange={async (e) => {
                       const nextRole = e.target.value;

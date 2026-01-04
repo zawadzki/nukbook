@@ -8,6 +8,7 @@ import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type Item = { id: number; name: string };
 
@@ -210,8 +211,6 @@ export default function AdminTagsGenresPage() {
   }
 
   async function onDeleteTag(t: Item) {
-    if (!confirm(`Delete tag "${t.name}"?`)) return;
-
     setErr(null);
     setBusyTagId(t.id);
     const prev = tags;
@@ -266,8 +265,6 @@ export default function AdminTagsGenresPage() {
   }
 
   async function onDeleteGenre(g: Item) {
-    if (!confirm(`Delete genre "${g.name}"?`)) return;
-
     setErr(null);
     setBusyGenreId(g.id);
     const prev = genres;
@@ -338,17 +335,17 @@ export default function AdminTagsGenresPage() {
                       disabled={busyTagId === t.id}
                     />
                     <div className="flex gap-2">
+                      <Button type="button" variant="info" size="sm" onClick={cancelEditTag} disabled={busyTagId === t.id}>
+                        Cancel
+                      </Button>
                       <Button
                         type="button"
-                        variant="outline"
+                        variant="success"
                         size="sm"
                         onClick={() => saveEditTag(t.id)}
                         disabled={busyTagId === t.id || !editTagName.trim()}
                       >
                         {busyTagId === t.id ? "Saving…" : "Save"}
-                      </Button>
-                      <Button type="button" variant="outline" size="sm" onClick={cancelEditTag} disabled={busyTagId === t.id}>
-                        Cancel
                       </Button>
                     </div>
                   </div>
@@ -356,12 +353,30 @@ export default function AdminTagsGenresPage() {
                   <>
                     <div className="font-medium">{t.name}</div>
                     <div className="mt-2 flex gap-2 text-sm">
-                      <Button type="button" variant="outline" size="xs" onClick={() => startEditTag(t)}>
+                      <Button type="button" variant="info" size="sm" onClick={() => startEditTag(t)}>
                         Edit
                       </Button>
-                      <Button type="button" variant="outline" size="xs" onClick={() => onDeleteTag(t)} disabled={busyTagId === t.id}>
+                      <Button
+                        type="button"
+                        variant="error"
+                        size="sm"
+                        onClick={() => {
+                          const el = document.getElementById(`delete-tag-${t.id}`) as HTMLDialogElement | null;
+                          el?.showModal();
+                        }}
+                        disabled={busyTagId === t.id}
+                      >
                         {busyTagId === t.id ? "…" : "Delete"}
                       </Button>
+                      <ConfirmDialog
+                        id={`delete-tag-${t.id}`}
+                        title="Delete tag"
+                        description={`Delete "${t.name}"? This cannot be undone.`}
+                        confirmLabel="Delete"
+                        confirmVariant="error"
+                        onConfirmAction={() => onDeleteTag(t)}
+                        busy={busyTagId === t.id}
+                      />
                     </div>
                   </>
                 )}
@@ -411,17 +426,17 @@ export default function AdminTagsGenresPage() {
                       disabled={busyGenreId === g.id}
                     />
                     <div className="flex gap-2">
+                      <Button type="button" variant="info" size="sm" onClick={cancelEditGenre} disabled={busyGenreId === g.id}>
+                        Cancel
+                      </Button>
                       <Button
                         type="button"
-                        variant="outline"
+                        variant="success"
                         size="sm"
                         onClick={() => saveEditGenre(g.id)}
                         disabled={busyGenreId === g.id || !editGenreName.trim()}
                       >
                         {busyGenreId === g.id ? "Saving…" : "Save"}
-                      </Button>
-                      <Button type="button" variant="outline" size="sm" onClick={cancelEditGenre} disabled={busyGenreId === g.id}>
-                        Cancel
                       </Button>
                     </div>
                   </div>
@@ -429,12 +444,30 @@ export default function AdminTagsGenresPage() {
                   <>
                     <div className="font-medium">{g.name}</div>
                     <div className="mt-2 flex gap-2 text-sm">
-                      <Button type="button" variant="outline" size="xs" onClick={() => startEditGenre(g)}>
+                      <Button type="button" variant="info" size="sm" onClick={() => startEditGenre(g)}>
                         Edit
                       </Button>
-                      <Button type="button" variant="outline" size="xs" onClick={() => onDeleteGenre(g)} disabled={busyGenreId === g.id}>
+                      <Button
+                        type="button"
+                        variant="error"
+                        size="sm"
+                        onClick={() => {
+                          const el = document.getElementById(`delete-genre-${g.id}`) as HTMLDialogElement | null;
+                          el?.showModal();
+                        }}
+                        disabled={busyGenreId === g.id}
+                      >
                         {busyGenreId === g.id ? "…" : "Delete"}
                       </Button>
+                      <ConfirmDialog
+                        id={`delete-genre-${g.id}`}
+                        title="Delete genre"
+                        description={`Delete "${g.name}"? This cannot be undone.`}
+                        confirmLabel="Delete"
+                        confirmVariant="error"
+                        onConfirmAction={() => onDeleteGenre(g)}
+                        busy={busyGenreId === g.id}
+                      />
                     </div>
                   </>
                 )}

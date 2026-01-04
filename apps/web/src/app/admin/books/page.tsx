@@ -12,6 +12,7 @@ import TagPicker from "@/components/TagPicker";
 import GenrePicker from "@/components/GenrePicker";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type AuthorOpt = { id: number; name: string };
 type TagOpt = { id: number; name: string };
@@ -293,8 +294,6 @@ export default function AdminBooksPage() {
   }
 
   async function onDelete(b: BookRow) {
-    if (!confirm(`Delete book "${b.title}"?`)) return;
-
     setErr(null);
     setRowBusyId(b.id);
 
@@ -532,7 +531,7 @@ export default function AdminBooksPage() {
                       <img
                         src={mediaUrl(b.cover_url) ?? ""}
                         alt={`${b.title} cover`}
-                        className="h-16 w-12 rounded border object-cover"
+                        className="h-16 w-12 rounded object-cover"
                       />
                     ) : (
                       <div className="flex h-16 w-12 items-center justify-center rounded border text-[10px] opacity-60">
@@ -588,27 +587,45 @@ export default function AdminBooksPage() {
                 <div className="flex gap-2">
                   {isEditing ? (
                     <>
+                      <Button onClick={cancelEdit} disabled={busy} type="button" variant="info" size="sm">
+                        Cancel
+                      </Button>
                       <Button
                         onClick={() => saveEdit(b.id)}
                         disabled={busy || !editTitle.trim()}
                         type="button"
-                        variant="outline"
+                        variant="success"
                         size="sm"
                       >
                         {busy ? "Saving…" : "Save"}
                       </Button>
-                      <Button onClick={cancelEdit} disabled={busy} type="button" variant="outline" size="sm">
-                        Cancel
-                      </Button>
                     </>
                   ) : (
                     <>
-                      <Button onClick={() => startEdit(b)} disabled={busy} type="button" variant="outline" size="sm">
+                      <Button onClick={() => startEdit(b)} disabled={busy} type="button" variant="info" size="sm">
                         Edit
                       </Button>
-                      <Button onClick={() => onDelete(b)} disabled={busy} type="button" variant="outline" size="sm">
+                      <Button
+                        onClick={() => {
+                          const el = document.getElementById(`delete-book-${b.id}`) as HTMLDialogElement | null;
+                          el?.showModal();
+                        }}
+                        disabled={busy}
+                        type="button"
+                        variant="error"
+                        size="sm"
+                      >
                         {busy ? "…" : "Delete"}
                       </Button>
+                      <ConfirmDialog
+                        id={`delete-book-${b.id}`}
+                        title="Delete book"
+                        description={`Delete "${b.title}"? This cannot be undone.`}
+                        confirmLabel="Delete"
+                        confirmVariant="error"
+                        onConfirmAction={() => onDelete(b)}
+                        busy={busy}
+                      />
                     </>
                   )}
                 </div>

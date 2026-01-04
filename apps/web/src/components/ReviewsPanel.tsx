@@ -14,6 +14,7 @@ import Button from "@/components/Button";
 import Panel from "@/components/Panel";
 import SurfaceBadge from "@/components/SurfaceBadge";
 import Avatar from "@/components/Avatar";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type Me = { id: number; email: string; username: string; role: string };
 
@@ -59,6 +60,7 @@ export default function ReviewsPanel({
   const [ratingStatus, setRatingStatus] = useState<string | null>(null);
   const [ratingBusy, setRatingBusy] = useState(false);
   const [quickRating, setQuickRating] = useState(0);
+  const deleteDialogId = `delete-review-${bookId}`;
 
   // local optimistic delete
   const [deletedMyReview, setDeletedMyReview] = useState(false);
@@ -198,14 +200,27 @@ export default function ReviewsPanel({
                 ) : null}
               </SurfaceBadge>
 
-              <Button onClick={startCreate} variant="primary">
-                Write a review
-              </Button>
+              {!myReview ? (
+                <Button onClick={startCreate} variant="primary">
+                  Write a review
+                </Button>
+              ) : null}
 
               {myReview && hasReviewText ? (
                 <Button onClick={() => startEdit(myReview)} variant="info" title="Edit your review">
                   Edit
                 </Button>
+              ) : null}
+              {myReview ? (
+                <ConfirmDialog
+                  id={deleteDialogId}
+                  title="Delete review"
+                  description="This will remove your review for this book."
+                  confirmLabel="Delete"
+                  confirmVariant="error"
+                  onConfirmAction={deleteMyReview}
+                  busy={busy}
+                />
               ) : null}
             </div>
           ) : (
@@ -253,7 +268,16 @@ export default function ReviewsPanel({
                       <Button onClick={() => startEdit(r)} variant="info" size="icon" title="Edit">
                         <PencilSquareIcon className="h-5 w-5" />
                       </Button>
-                      <Button onClick={deleteMyReview} disabled={busy} variant="error" size="icon" title="Delete">
+                      <Button
+                        onClick={() => {
+                          const el = document.getElementById(deleteDialogId) as HTMLDialogElement | null;
+                          el?.showModal();
+                        }}
+                        disabled={busy}
+                        variant="error"
+                        size="icon"
+                        title="Delete"
+                      >
                         <TrashIcon className="h-5 w-5" />
                       </Button>
                     </div>
@@ -296,7 +320,15 @@ export default function ReviewsPanel({
           />
 
           {editing ? (
-            <Button onClick={deleteMyReview} disabled={busy} variant="error" className="mt-3">
+            <Button
+              onClick={() => {
+                const el = document.getElementById(deleteDialogId) as HTMLDialogElement | null;
+                el?.showModal();
+              }}
+              disabled={busy}
+              variant="error"
+              className="mt-3"
+            >
               Delete my review
             </Button>
           ) : null}

@@ -8,6 +8,8 @@ import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import StarRating from "@/components/StarRating";
 
 type ReviewRow = {
   id: number;
@@ -82,8 +84,6 @@ export default function AdminReviewsPage() {
   }, [dq]);
 
   async function onDelete(r: ReviewRow) {
-    if (!confirm(`Delete review #${r.id} by ${r.user.username} for "${r.book.title}"?`)) return;
-
     setErr(null);
     setBusyId(r.id);
 
@@ -131,16 +131,34 @@ export default function AdminReviewsPage() {
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0 space-y-1">
                 <div className="text-xs opacity-60">ID {r.id}</div>
-                <div className="text-lg font-medium">{r.book.title}</div>
-                <div className="text-sm">@{r.user.username}</div>
+                <div className="text-lg font-medium"><a className="hover:underline" href={`/books/${r.book.id}`}>{r.book.title}</a></div>
+                <div className="text-sm"><a className="hover:underline" href={`/users/${r.user.id}`}>@{r.user.username}</a></div>
                 <div className="text-xs opacity-70">{r.user.email}</div>
               </div>
 
               <div className="flex items-center gap-3 text-sm">
-                <span className="rounded border px-2 py-1">Rating {r.rating}</span>
-                <Button onClick={() => onDelete(r)} disabled={busyId === r.id} type="button" variant="outline" size="sm">
+                <StarRating value={r.rating} size="xs" />
+                <Button
+                  onClick={() => {
+                    const el = document.getElementById(`delete-review-${r.id}`) as HTMLDialogElement | null;
+                    el?.showModal();
+                  }}
+                  disabled={busyId === r.id}
+                  type="button"
+                  variant="error"
+                  size="sm"
+                >
                   {busyId === r.id ? "…" : "Delete"}
                 </Button>
+                <ConfirmDialog
+                  id={`delete-review-${r.id}`}
+                  title="Delete review"
+                  description={`Delete review #${r.id} by ${r.user.username} for "${r.book.title}"?`}
+                  confirmLabel="Delete"
+                  confirmVariant="error"
+                  onConfirmAction={() => onDelete(r)}
+                  busy={busyId === r.id}
+                />
               </div>
             </div>
 
