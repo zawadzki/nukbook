@@ -182,7 +182,7 @@ export default function ShelfPage({
     <main className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <a className="btn btn-soft hover:btn-primary btn-sm" href="/shelves">
+          <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/shelves">
             <ChevronLeftIcon className="w-5 h-5"/>
             Back to shelves
           </a>
@@ -191,7 +191,7 @@ export default function ShelfPage({
           </h1>
         </div>
 
-        <a className="btn btn-soft hover:btn-primary btn-sm" href="/books">
+        <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/books">
           Browse books
         </a>
       </div>
@@ -329,7 +329,7 @@ export default function ShelfPage({
                 <Button
                   onClick={() => removeBook(b.id)}
                   disabled={busy}
-                  variant="mantle"
+                  variant="error"
                   size="icon"
                   title="Remove from shelf"
                   aria-label="Remove from shelf"

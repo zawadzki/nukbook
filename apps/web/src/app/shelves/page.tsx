@@ -177,7 +177,7 @@ export default function ShelvesPage() {
       <main className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <h1 className="text-2xl font-semibold">My shelves</h1>
-          <a className="btn hover:btn-primary btn-sm" href="/books">
+          <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/books">
             Browse books
           </a>
         </div>
@@ -189,12 +189,12 @@ export default function ShelvesPage() {
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 placeholder="e.g. Favorites, Sci-fi, 2026 goals…"
-                className="w-80 max-w-full rounded-md border border-ctp-surface0 bg-ctp-mantle px-3 py-2 text-sm outline-none placeholder:text-ctp-text focus:border-ctp-surface1"
+                className="input w-80 max-w-full placeholder:text-ctp-text"
             />
             <select
                 value={newVisibility}
                 onChange={(e) => setNewVisibility(e.target.value as "public" | "followers" | "private")}
-                className="rounded-md border border-ctp-surface0 bg-ctp-mantle px-3 py-2 text-sm outline-none"
+                className="select max-w-28"
             >
               <option value="private">Private</option>
               <option value="followers">Followers</option>
@@ -252,7 +252,7 @@ export default function ShelvesPage() {
 
                           {s.is_system ? <div className="mt-1 text-xs text-ctp-subtext0">System shelf</div> : null}
                           <div className="mt-2 text-sm">
-                            <label className="text-xs text-ctp-subtext0">Visibility</label>
+                            <label className="text-xs text-ctp-subtext0 mr-2">Visibility</label>
                             <select
                               value={isEditing ? editVisibility : s.visibility}
                               onChange={(e) => {
@@ -260,10 +260,10 @@ export default function ShelvesPage() {
                                 if (isEditing) {
                                   setEditVisibility(value);
                                 } else {
-                                  updateVisibility(s.id, value);
+                                  void updateVisibility(s.id, value);
                                 }
                               }}
-                              className="ml-2 rounded-md border border-ctp-surface0 bg-ctp-mantle px-2 py-1 text-xs outline-none"
+                              className="select select-xs max-w-24"
                               disabled={busy}
                             >
                               <option value="private">Private</option>
@@ -280,7 +280,7 @@ export default function ShelvesPage() {
                               <Button
                                   onClick={() => startEdit(s)}
                                   disabled={busy}
-                                  variant="mantle"
+                                  variant="info"
                                   size="icon"
                                   title="Rename shelf"
                                   aria-label="Rename shelf"
@@ -293,7 +293,7 @@ export default function ShelvesPage() {
                               <Button
                                   onClick={() => deleteShelf(s.id)}
                                   disabled={busy}
-                                  variant="mantle"
+                                  variant="error"
                                   size="icon"
                                   title="Delete shelf"
                                   aria-label="Delete shelf"

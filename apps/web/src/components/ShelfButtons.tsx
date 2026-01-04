@@ -107,7 +107,7 @@ export default function ShelfButtons({bookId}: { bookId: number }) {
         <Panel as="section" padding="lg">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Shelves</h2>
-            <a className="text-sm text-ctp-subtext0 hover:text-ctp-mauve-500 hover:underline" href="/shelves">
+            <a className="btn btn-soft hover:btn-primary btn-sm" href="/shelves">
               Manage shelves
             </a>
           </div>
@@ -120,7 +120,7 @@ export default function ShelfButtons({bookId}: { bookId: number }) {
       <Panel as="section" padding="lg">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-semibold">Shelves</h2>
-          <a className="text-sm text-ctp-subtext0 hover:text-ctp-mauve-500 hover:underline" href="/shelves">
+          <a className="btn btn-soft hover:btn-primary btn-sm" href="/shelves">
             Manage shelves
           </a>
         </div>

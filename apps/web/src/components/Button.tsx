@@ -1,35 +1,51 @@
 import { forwardRef } from "react";
 import type { ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "basic" | "primary" | "neutral" | "outline" | "mantle" | "soft" | "ghost" | "plain";
+type ButtonVariant =
+  | "basic"
+  | "primary"
+  | "neutral"
+  | "outline"
+  | "mantle"
+  | "soft"
+  | "ghost"
+  | "plain"
+  | "info"
+  | "success"
+  | "warning"
+  | "error";
 type ButtonSize = "none" | "xs" | "sm" | "md" | "icon" | "icon-sm";
 type ButtonRadius = "md" | "full";
 
 const baseClasses =
-  "btn disabled:pointer-events-none disabled:opacity-60";
+  "btn disabled:pointer-events-none disabled:opacity-60 leading-none";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  basic: " ",
+  basic:   " ",
   primary: "btn-primary",
   neutral: "btn-neutral",
   outline: "btn-outline",
-  mantle: "btn-secondary",
-  soft: "btn-soft",
-  ghost: "btn-ghost",
-  plain: "btn-link",
+  mantle:  "btn-secondary",
+  soft:    "btn-soft",
+  ghost:   "btn-ghost",
+  plain:   "btn-link",
+  info:    "btn-soft btn-info",
+  success: "btn-soft btn-success",
+  warning: "btn-soft btn-warning",
+  error:   "btn-soft btn-error",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  none: "",
-  xs: "btn-xs",
-  sm: "btn-sm",
-  md: "btn-md",
-  icon: "btn-circle",
+  none:      "",
+  xs:        "btn-xs",
+  sm:        "btn-sm",
+  md:        "btn-md",
+  icon:      "btn-circle",
   "icon-sm": "p-1.5",
 };
 
 const radiusClasses: Record<ButtonRadius, string> = {
-  md: "",
+  md:   "",
   full: "rounded-full",
 };
 

@@ -90,6 +90,7 @@ export default function ReviewsPanel({
     if (!me || deletedMyReview) return null;
     return reviews.find((r) => r.user_id === me.id) ?? null;
   }, [me, reviews, deletedMyReview]);
+  const hasReviewText = (myReview?.body ?? "").trim().length > 0;
 
   useEffect(() => {
     setQuickRating(myReview?.rating ?? 0);
@@ -201,8 +202,8 @@ export default function ReviewsPanel({
                 Write a review
               </Button>
 
-              {myReview ? (
-                <Button onClick={() => startEdit(myReview)} variant="primary" title="Edit your review">
+              {myReview && hasReviewText ? (
+                <Button onClick={() => startEdit(myReview)} variant="info" title="Edit your review">
                   Edit
                 </Button>
               ) : null}
@@ -249,10 +250,10 @@ export default function ReviewsPanel({
 
                   {isMine ? (
                     <div className="flex shrink-0 items-center gap-2">
-                      <Button onClick={() => startEdit(r)} variant="mantle" size="icon" title="Edit">
+                      <Button onClick={() => startEdit(r)} variant="info" size="icon" title="Edit">
                         <PencilSquareIcon className="h-5 w-5" />
                       </Button>
-                      <Button onClick={deleteMyReview} disabled={busy} variant="mantle" size="icon" title="Delete">
+                      <Button onClick={deleteMyReview} disabled={busy} variant="error" size="icon" title="Delete">
                         <TrashIcon className="h-5 w-5" />
                       </Button>
                     </div>
@@ -273,7 +274,7 @@ export default function ReviewsPanel({
                 setOpen(false);
                 setEditing(null);
               }}
-              variant="mantle"
+              variant="ghost"
               size="icon"
               title="Close"
               aria-label="Close"
@@ -284,7 +285,7 @@ export default function ReviewsPanel({
 
           <ReviewForm
             bookId={bookId}
-            initialRating={editing?.rating ?? 5}
+            initialRating={editing?.rating ?? (quickRating > 0 ? quickRating : 5)}
             initialBody={editing?.body ?? ""}
             onSaved={() => {
               setOpen(false);
@@ -295,7 +296,7 @@ export default function ReviewsPanel({
           />
 
           {editing ? (
-            <Button onClick={deleteMyReview} disabled={busy} variant="primary" className="mt-3">
+            <Button onClick={deleteMyReview} disabled={busy} variant="error" className="mt-3">
               Delete my review
             </Button>
           ) : null}

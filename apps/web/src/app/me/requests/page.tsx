@@ -44,7 +44,7 @@ export default function RequestsPage() {
     <main className="mx-auto max-w-md space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Pending requests</h1>
-        <a className="btn btn-soft hover:btn-primary btn-sm" href="/me">
+        <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/me">
           Back to profile
         </a>
       </div>

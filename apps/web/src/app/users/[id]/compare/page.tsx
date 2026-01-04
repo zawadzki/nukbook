@@ -172,7 +172,7 @@ export default function TasteComparePage({ params }: { params: Promise<{ id: str
       {data ? (
         <>
           <div className="flex items-center justify-between gap-3">
-            <a className="btn btn-soft hover:btn-primary btn-sm" href={`/users/${data.target.id}`}>
+            <a className="btn btn-outline btn-primary btn-sm rounded-full" href={`/users/${data.target.id}`}>
               <ChevronLeftIcon className="w-5 h-5"/>
               Back to @{data.target.username}
             </a>

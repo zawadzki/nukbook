@@ -14,7 +14,7 @@ export default function FollowingPage() {
           {ownerLabel ? `${ownerLabel} following` : "Following"}
         </h1>
         {backHref ? (
-          <a className="btn btn-soft hover:btn-primary btn-sm" href={backHref}>
+          <a className="btn btn-outline btn-primary btn-sm rounded-full" href={backHref}>
             {backLabel}
           </a>
         ) : null}

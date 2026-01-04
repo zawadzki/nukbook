@@ -46,7 +46,7 @@ export default async function BookPage({
   return (
     <main className="space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <a className="btn btn-soft hover:btn-primary btn-sm" href="/books">
+        <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/books">
           <ChevronLeftIcon className="w-5 h-5"/>
           Back to books
         </a>

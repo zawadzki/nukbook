@@ -91,7 +91,7 @@ export default function DiscoverPage() {
     <main className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Discover</h1>
-        <a className="btn hover:btn-primary btn-sm" href="/books">
+        <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/books">
           Browse books
         </a>
       </div>

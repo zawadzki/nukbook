@@ -153,6 +153,7 @@ export function ActivityPanel({
             onClick={onLoadMore}
             disabled={loading || done}
             variant="outline"
+            radius="full"
             size="sm"
           >
             {done ? "No more activity" : loading ? "Loading…" : "Load more"}

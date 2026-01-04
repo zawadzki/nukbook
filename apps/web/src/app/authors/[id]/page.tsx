@@ -43,7 +43,7 @@ export default async function AuthorPage({
   return (
     <main className="space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <a className="btn btn-soft hover:btn-primary btn-sm" href="/authors">
+        <a className="btn btn-outline btn-primary btn-sm rounded-full" href="/authors">
           <ChevronLeftIcon className="w-5 h-5"/>
           Back to authors
         </a>
@@ -55,7 +55,7 @@ export default async function AuthorPage({
             <img
               src={mediaUrl(author.photo_url) ?? ""}
               alt={`${author.name} portrait`}
-              className="h-24 w-24 rounded-md border border-ctp-surface1 object-cover"
+              className="h-24 w-24 rounded-md object-cover"
             />
             ) : (
               <MediaPlaceholder className="h-24 w-24" variant="mantle">

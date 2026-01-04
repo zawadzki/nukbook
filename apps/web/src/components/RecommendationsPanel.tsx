@@ -70,6 +70,8 @@ export default function RecommendationsPanel() {
 
   if (!token) return null;
 
+  const visibleSections = (sections ?? []).filter((section) => section.items.length > 0);
+
   return (
     <Panel as="section" padding="lg">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -84,9 +86,11 @@ export default function RecommendationsPanel() {
         <p className="mt-2 text-sm text-ctp-subtext0">{status}</p>
       ) : sections && sections.length === 0 ? (
         <p className="mt-2 text-sm text-ctp-subtext0">Rate and finish books to get recommendations.</p>
+      ) : visibleSections.length === 0 ? (
+        <p className="mt-2 text-sm text-ctp-subtext0">Rate and finish books to get recommendations.</p>
       ) : (
         <div className="mt-3 space-y-4">
-          {(sections ?? []).map((section, idx) => (
+          {visibleSections.map((section, idx) => (
             <div key={`${section.seed.id}-${idx}`} className="space-y-2">
               <div className="text-sm text-ctp-subtext0">
                 Because you liked{" "}
@@ -95,49 +99,45 @@ export default function RecommendationsPanel() {
                 </a>
               </div>
 
-              {section.items.length === 0 ? (
-                <p className="text-sm text-ctp-subtext0">No matches yet.</p>
-              ) : (
-                <ul className="grid gap-3 md:grid-cols-2">
-                  {section.items.map((b) => (
-                    <SurfaceCard as="li" key={b.id} padding="sm">
-                      <div className="flex gap-3">
-                        <BookCover
-                          coverUrl={b.cover_url}
-                          title={b.title}
-                          className="h-16 w-12"
-                          placeholder="No cover"
-                        />
+              <ul className="grid gap-3 md:grid-cols-2">
+                {section.items.map((b) => (
+                  <SurfaceCard as="li" key={b.id} padding="sm">
+                    <div className="flex gap-3">
+                      <BookCover
+                        coverUrl={b.cover_url}
+                        title={b.title}
+                        className="h-16 w-12"
+                        placeholder="No cover"
+                      />
 
-                        <div className="min-w-0 flex-1">
-                          <a className="font-medium hover:underline" href={`/books/${b.id}`}>
-                            {b.title}
-                          </a>
-                          {b.authors?.length ? (
-                            <div className="text-xs text-ctp-subtext0">
-                              {b.authors.map((a, index) => (
-                                <span key={a.id}>
-                                  <a href={`/authors/${a.id}`} className="hover:underline">
-                                    {a.name}
-                                  </a>
-                                  {index < b.authors.length - 1 ? ", " : ""}
-                                </span>
-                              ))}
-                            </div>
-                          ) : null}
-                          <div className="mt-2 flex items-center gap-2 text-xs text-ctp-subtext0">
-                            {b.rating_count > 0 && b.rating_avg != null ? (
-                              <StarRatingAvg value={b.rating_avg} size="xs" />
-                            ) : (
-                              <span>No ratings</span>
-                            )}
+                      <div className="min-w-0 flex-1">
+                        <a className="font-medium hover:underline" href={`/books/${b.id}`}>
+                          {b.title}
+                        </a>
+                        {b.authors?.length ? (
+                          <div className="text-xs text-ctp-subtext0">
+                            {b.authors.map((a, index) => (
+                              <span key={a.id}>
+                                <a href={`/authors/${a.id}`} className="hover:underline">
+                                  {a.name}
+                                </a>
+                                {index < b.authors.length - 1 ? ", " : ""}
+                              </span>
+                            ))}
                           </div>
+                        ) : null}
+                        <div className="mt-2 flex items-center gap-2 text-xs text-ctp-subtext0">
+                          {b.rating_count > 0 && b.rating_avg != null ? (
+                            <StarRatingAvg value={b.rating_avg} size="xs" />
+                          ) : (
+                            <span>No ratings</span>
+                          )}
                         </div>
                       </div>
-                    </SurfaceCard>
-                  ))}
-                </ul>
-              )}
+                    </div>
+                  </SurfaceCard>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
