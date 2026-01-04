@@ -2,71 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { clearToken, getToken } from "@/lib/auth";
-import { apiBase, apiGet, apiSend } from "@/lib/api";
+import { apiBase, apiSend } from "@/lib/api";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
 import Avatar from "@/components/Avatar";
 import ProfileCover from "@/components/ProfileCover";
-
-type Me = {
-  id: number;
-  email: string;
-  username: string;
-  role: string;
-  is_private: boolean;
-  avatar_url?: string | null;
-  cover_url?: string | null;
-};
+import { useMeSummary } from "@/hooks/useMeSummary";
 
 export default function SettingsPage() {
-  const [me, setMe] = useState<Me | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
-  const [followersCount, setFollowersCount] = useState<number | null>(null);
-  const [followingCount, setFollowingCount] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const { me, setMe, status, followersCount, followingCount } = useMeSummary(token);
+  const [actionStatus, setActionStatus] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
 
   useEffect(() => {
-    async function run() {
-      try {
-        const token = getToken();
-        if (!token) {
-          setStatus("Not logged in.");
-          return;
-        }
-
-        const meData = await apiGet<Me>("/auth/me", "browser", undefined, token);
-        setMe(meData);
-
-        try {
-          const followers = await apiGet<{ id: number; username: string }[]>(
-            "/me/followers",
-            "browser",
-            undefined,
-            token
-          );
-          setFollowersCount(followers.length);
-        } catch {
-          setFollowersCount(null);
-        }
-
-        try {
-          const following = await apiGet<{ id: number; username: string }[]>(
-            "/me/following",
-            "browser",
-            undefined,
-            token
-          );
-          setFollowingCount(following.length);
-        } catch {
-          setFollowingCount(null);
-        }
-      } catch (e: any) {
-        setStatus(e?.message ?? "Failed to load profile");
-      }
-    }
-    run();
+    setToken(getToken());
   }, []);
 
   function logout() {
@@ -133,6 +85,7 @@ export default function SettingsPage() {
       </div>
 
       {status ? <p className="text-ctp-subtext0">{status}</p> : null}
+      {actionStatus ? <p className="text-ctp-subtext0">{actionStatus}</p> : null}
 
       {me ? (
         <Panel padding="md" className="space-y-4">
@@ -164,7 +117,7 @@ export default function SettingsPage() {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    uploadPhoto("avatar", file);
+                    void uploadPhoto("avatar", file);
                     e.currentTarget.value = "";
                   }}
                 />
@@ -180,7 +133,7 @@ export default function SettingsPage() {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    uploadPhoto("cover", file);
+                    void uploadPhoto("cover", file);
                     e.currentTarget.value = "";
                   }}
                 />
@@ -218,13 +171,14 @@ export default function SettingsPage() {
                     onChange={async (e) => {
                       const next = e.target.checked;
                       setMe((prev) => (prev ? { ...prev, is_private: next } : prev));
+                      setActionStatus(null);
                       try {
                         const token = getToken();
                         if (!token) return;
                         await apiSend("/me/privacy", "browser", "PATCH", { is_private: next }, token);
                       } catch (err: any) {
                         setMe((prev) => (prev ? { ...prev, is_private: !next } : prev));
-                        setStatus(err?.message ?? "Failed to update privacy");
+                        setActionStatus(err?.message ?? "Failed to update privacy");
                       }
                     }}
                   />

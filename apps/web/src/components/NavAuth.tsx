@@ -320,7 +320,7 @@ export function NavAuth() {
           <Button
             type="button"
             onClick={() => setAdminOpen((v) => !v)}
-            variant="soft"
+            variant="primary"
             size="sm"
             radius="full"
             className="px-2.5 py-1 text-xs"

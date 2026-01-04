@@ -26,7 +26,7 @@ export default function FollowingPage() {
         <ul className="space-y-2">
           {items.map((u) => (
             <Panel as="li" key={u.id} padding="sm">
-              <a className="flex items-center gap-2 text-ctp-text hover:underline" href={`/users/${u.id}`}>
+              <a className="flex items-center gap-2 text-ctp-text" href={`/users/${u.id}`}>
                 <Avatar src={u.avatar_url} username={u.username} size="xs" />
                 @{u.username}
               </a>

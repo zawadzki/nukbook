@@ -9,12 +9,21 @@ const sizeClasses: Record<AvatarSize, string> = {
   md: "w-20 rounded",
   lg: "w-32 rounded",
 };
+const textSizeClasses: Record<AvatarSize, string> = {
+  xxs: "text-[10px]",
+  xs: "text-xs",
+  sm: "text-sm",
+  md: "text-xl",
+  lg: "text-2xl",
+};
 
 type AvatarProps = {
   src?: string | null;
   username?: string | null;
   size?: AvatarSize;
   className?: string;
+  status?: "online" | "offline" | null;
+  wrapperClassName?: string;
 };
 
 function initialFromUsername(username?: string | null): string {
@@ -23,7 +32,14 @@ function initialFromUsername(username?: string | null): string {
   return clean[0].toUpperCase();
 }
 
-export default function Avatar({ src, username, size = "sm", className }: AvatarProps) {
+export default function Avatar({
+  src,
+  username,
+  size = "sm",
+  className,
+  status = null,
+  wrapperClassName,
+}: AvatarProps) {
   const resolved = mediaUrl(src);
   const initial = initialFromUsername(username);
   const classes = [
@@ -33,11 +49,26 @@ export default function Avatar({ src, username, size = "sm", className }: Avatar
   ]
     .filter(Boolean)
     .join(" ");
+  const statusClass = status ? `avatar-${status}` : "";
+  const wrapperClasses = [
+    resolved ? "avatar" : "avatar avatar-placeholder",
+    statusClass,
+    wrapperClassName,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div className={resolved ? "avatar" : "avatar avatar-placeholder"}>
-      <div className={resolved ? classes : "bg-neutral text-neutral-content rounded-full "+sizeClasses[size]} aria-label={username ? `@${username} avatar` : "Avatar"}>
-        {resolved ? <img src={resolved} alt="" className="h-full w-full object-cover"/> : <span>{initial}</span>}
+    <div className={wrapperClasses}>
+      <div
+        className={resolved ? classes : "bg-neutral text-neutral-content rounded-full "+sizeClasses[size]}
+        aria-label={username ? `@${username} avatar` : "Avatar"}
+      >
+        {resolved ? (
+          <img src={resolved} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <span className={textSizeClasses[size]}>{initial}</span>
+        )}
       </div>
     </div>
   );

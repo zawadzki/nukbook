@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File
-from sqlalchemy import and_, func, or_, select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy import and_, case, func, or_, select
+from sqlalchemy.orm import Session, aliased, selectinload
 
+from app.core.taste_compare import compute_pearson_from_aggregates, compute_similarity_score
 from app.deps import get_current_user, get_db
 from app.models import Author, AuthorLike, Book, Follow, ReadingStatus, Review, Shelf, User, shelf_books
-from app.schemas import ActivityItem, AuthorOut, LikedAuthorOut, PrivacyUpdateIn, ProfileOut
+from app.schemas import (
+    ActivityItem,
+    AuthorOut,
+    LikedAuthorOut,
+    PrivacyUpdateIn,
+    ProfileOut,
+    TasteCompareOut,
+)
 from app.core.media import save_media_file
 
 router = APIRouter(tags=["social"])
@@ -444,6 +452,16 @@ def _can_view_shelves(db: Session, me: User, target: User) -> bool:
     return _is_following(db, me.id, target.id)
 
 
+def _format_shared_row(row) -> dict:
+    return {
+        "book_id": row.book_id,
+        "title": row.title,
+        "viewer_rating": row.viewer_rating,
+        "target_rating": row.target_rating,
+        "diff": int(row.diff),
+    }
+
+
 @router.get("/users/{user_id}/shelves")
 def list_user_shelves(
     user_id: int,
@@ -497,6 +515,221 @@ def list_user_shelves(
     return {
         "user": {"id": target.id, "username": target.username, "is_private": target.is_private},
         "shelves": out,
+    }
+
+
+@router.get("/users/{target_user_id}/taste-compare", response_model=TasteCompareOut)
+def taste_compare(
+    target_user_id: int,
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    sort: str = Query(default="diff_desc"),
+    me: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    target = db.get(User, target_user_id)
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not _can_view_shelves(db, me, target):
+        raise HTTPException(status_code=403, detail="Not allowed to compare taste")
+
+    viewer_review = aliased(Review)
+    target_review = aliased(Review)
+
+    shared_subq = (
+        select(
+            viewer_review.book_id.label("book_id"),
+            Book.title.label("title"),
+            viewer_review.rating.label("viewer_rating"),
+            target_review.rating.label("target_rating"),
+            func.abs(viewer_review.rating - target_review.rating).label("diff"),
+        )
+        .select_from(viewer_review)
+        .join(
+            target_review,
+            and_(
+                target_review.book_id == viewer_review.book_id,
+                target_review.user_id == target.id,
+                target_review.is_hidden == False,  # noqa: E712
+            ),
+        )
+        .join(Book, Book.id == viewer_review.book_id)
+        .where(
+            viewer_review.user_id == me.id,
+            viewer_review.is_hidden == False,  # noqa: E712
+        )
+        .subquery()
+    )
+
+    common_count = db.execute(select(func.count()).select_from(shared_subq)).scalar_one() or 0
+    mean_abs_diff = db.execute(select(func.avg(shared_subq.c.diff))).scalar_one()
+    mean_abs_diff_value = float(mean_abs_diff or 0.0)
+
+    similarity_score = compute_similarity_score(mean_abs_diff_value, int(common_count or 0))
+
+    pearson: float | None = None
+    if common_count and common_count >= 5:
+        sums = db.execute(
+            select(
+                func.sum(shared_subq.c.viewer_rating),
+                func.sum(shared_subq.c.target_rating),
+                func.sum(shared_subq.c.viewer_rating * shared_subq.c.viewer_rating),
+                func.sum(shared_subq.c.target_rating * shared_subq.c.target_rating),
+                func.sum(shared_subq.c.viewer_rating * shared_subq.c.target_rating),
+            )
+        ).one()
+        pearson = compute_pearson_from_aggregates(
+            int(common_count),
+            float(sums[0] or 0.0),
+            float(sums[1] or 0.0),
+            float(sums[2] or 0.0),
+            float(sums[3] or 0.0),
+            float(sums[4] or 0.0),
+        )
+
+    agreements_rows = db.execute(
+        select(shared_subq)
+        .order_by(
+            shared_subq.c.diff.asc(),
+            ((shared_subq.c.viewer_rating + shared_subq.c.target_rating) / 2).desc(),
+            shared_subq.c.title.asc(),
+        )
+        .limit(5)
+    ).all()
+    disagreements_rows = db.execute(
+        select(shared_subq)
+        .order_by(
+            shared_subq.c.diff.desc(),
+            case(
+                (shared_subq.c.viewer_rating >= shared_subq.c.target_rating, shared_subq.c.viewer_rating),
+                else_=shared_subq.c.target_rating,
+            ).desc(),
+            shared_subq.c.title.asc(),
+        )
+        .limit(5)
+    ).all()
+
+    shared_sort_map = {
+        "diff_desc": [shared_subq.c.diff.desc(), shared_subq.c.title.asc()],
+        "diff_asc": [shared_subq.c.diff.asc(), shared_subq.c.title.asc()],
+        "title": [shared_subq.c.title.asc()],
+        "viewer_rating": [shared_subq.c.viewer_rating.desc(), shared_subq.c.title.asc()],
+        "target_rating": [shared_subq.c.target_rating.desc(), shared_subq.c.title.asc()],
+    }
+    if sort not in shared_sort_map:
+        raise HTTPException(status_code=400, detail="Invalid sort option")
+
+    shared_rows = db.execute(
+        select(shared_subq).order_by(*shared_sort_map[sort]).limit(limit).offset(offset)
+    ).all()
+
+    viewer_loved_review = aliased(Review)
+    viewer_loved_target_review = aliased(Review)
+    viewer_loved_target_status = aliased(ReadingStatus)
+
+    viewer_loved_rows = db.execute(
+        select(Book, viewer_loved_review.rating)
+        .join(
+            viewer_loved_review,
+            and_(
+                viewer_loved_review.book_id == Book.id,
+                viewer_loved_review.user_id == me.id,
+                viewer_loved_review.is_hidden == False,  # noqa: E712
+                viewer_loved_review.rating >= 4,
+            ),
+        )
+        .outerjoin(
+            viewer_loved_target_review,
+            and_(
+                viewer_loved_target_review.book_id == Book.id,
+                viewer_loved_target_review.user_id == target.id,
+            ),
+        )
+        .outerjoin(
+            viewer_loved_target_status,
+            and_(
+                viewer_loved_target_status.book_id == Book.id,
+                viewer_loved_target_status.user_id == target.id,
+            ),
+        )
+        .where(
+            viewer_loved_target_review.id.is_(None),
+            viewer_loved_target_status.id.is_(None),
+        )
+        .options(selectinload(Book.authors))
+        .order_by(viewer_loved_review.rating.desc(), Book.title.asc())
+        .limit(10)
+    ).all()
+
+    target_loved_review = aliased(Review)
+    target_loved_viewer_review = aliased(Review)
+    target_loved_viewer_status = aliased(ReadingStatus)
+
+    target_loved_rows = db.execute(
+        select(Book, target_loved_review.rating)
+        .join(
+            target_loved_review,
+            and_(
+                target_loved_review.book_id == Book.id,
+                target_loved_review.user_id == target.id,
+                target_loved_review.is_hidden == False,  # noqa: E712
+                target_loved_review.rating >= 4,
+            ),
+        )
+        .outerjoin(
+            target_loved_viewer_review,
+            and_(
+                target_loved_viewer_review.book_id == Book.id,
+                target_loved_viewer_review.user_id == me.id,
+            ),
+        )
+        .outerjoin(
+            target_loved_viewer_status,
+            and_(
+                target_loved_viewer_status.book_id == Book.id,
+                target_loved_viewer_status.user_id == me.id,
+            ),
+        )
+        .where(
+            target_loved_viewer_review.id.is_(None),
+            target_loved_viewer_status.id.is_(None),
+        )
+        .options(selectinload(Book.authors))
+        .order_by(target_loved_review.rating.desc(), Book.title.asc())
+        .limit(10)
+    ).all()
+
+    return {
+        "viewer": {"id": me.id, "username": me.username, "avatar_url": me.avatar_url},
+        "target": {"id": target.id, "username": target.username, "avatar_url": target.avatar_url},
+        "common_count": int(common_count or 0),
+        "similarity_score": similarity_score,
+        "mean_abs_diff": mean_abs_diff_value,
+        "pearson": pearson,
+        "agreements": [_format_shared_row(row) for row in agreements_rows],
+        "disagreements": [_format_shared_row(row) for row in disagreements_rows],
+        "viewer_loved_target_unread": [
+            {
+                "book_id": book.id,
+                "title": book.title,
+                "cover_url": book.cover_url,
+                "authors": [{"id": a.id, "name": a.name} for a in (book.authors or [])],
+                "viewer_rating": rating,
+            }
+            for book, rating in viewer_loved_rows
+        ],
+        "target_loved_viewer_unread": [
+            {
+                "book_id": book.id,
+                "title": book.title,
+                "cover_url": book.cover_url,
+                "authors": [{"id": a.id, "name": a.name} for a in (book.authors or [])],
+                "target_rating": rating,
+            }
+            for book, rating in target_loved_rows
+        ],
+        "shared_ratings": [_format_shared_row(row) for row in shared_rows],
     }
 
 

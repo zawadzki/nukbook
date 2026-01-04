@@ -11,7 +11,13 @@ from .admin_books import BookCreate, BookUpdate
 from .admin_genres import GenreCreate
 from .admin_tags import TagCreate
 from .reading_status import ReadingStatusIn, ReadingStatusOut
-from .social import ProfileOut, ActivityItem, PrivacyUpdateIn, LikedAuthorOut
+from .social import (
+    ProfileOut,
+    ActivityItem,
+    PrivacyUpdateIn,
+    LikedAuthorOut,
+    TasteCompareOut,
+)
 
 __all__ = [
     "AuthorOut",
@@ -40,4 +46,5 @@ __all__ = [
     "ActivityItem",
     "PrivacyUpdateIn",
     "LikedAuthorOut",
+    "TasteCompareOut",
 ]

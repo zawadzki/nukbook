@@ -20,6 +20,7 @@ Used as excuse to test drive FastAPI + Next.js stack.</p>
 - Write reviews, leave ratings, and followed users see activity feeds
 - Follow users, manage requests, and view notifications
 - Discover recommendations, genres, and tags
+- Compare taste with friends to see similarity, agreements, and recommendations
 - Admin views for managing books, authors, users, reviews, tags, and genres
 
 ## Getting started

@@ -15,6 +15,7 @@ import {
   ShelvesPanel,
 } from "@/components/ProfilePanels";
 import { useProfilePanels } from "@/hooks/useProfilePanels";
+import TasteComparisonPanel from "@/components/TasteComparisonPanel";
 
 type Profile = {
   id: number;
@@ -182,19 +183,24 @@ export default function UserProfilePage({
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 absolute bottom-2 right-2">
+          <div className="flex flex-wrap items-center justify-between gap-3 absolute bottom-2 right-2 p-1 bg-ctp-base rounded-xl">
             {!profile.is_me ? (
-              profile.follow_status === "accepted" ? (
-                <Button onClick={() => follow("unfollow")} variant="neutral">
-                  Unfollow
+              <div className="flex flex-wrap items-center gap-2">
+                <Button onClick={() => router.push(`/users/${profile.id}/compare`)} variant="primary">
+                  Compare taste
                 </Button>
-              ) : profile.follow_status === "pending" ? (
-                <span className="text-sm text-ctp-base">Request sent</span>
-              ) : (
-                <Button onClick={() => follow("follow")} variant="primary">
-                  Follow
-                </Button>
-              )
+                {profile.follow_status === "accepted" ? (
+                  <Button onClick={() => follow("unfollow")} variant="neutral">
+                    Unfollow
+                  </Button>
+                ) : profile.follow_status === "pending" ? (
+                  <span className="text-sm text-ctp-base">Request sent</span>
+                ) : (
+                  <Button onClick={() => follow("follow")} variant="primary">
+                    Follow
+                  </Button>
+                )}
+              </div>
             ) : null}
           </div>
         </Panel>
@@ -206,6 +212,11 @@ export default function UserProfilePage({
         </div>
 
         <div className="flex flex-col gap-5 min-w-xl">
+          {profile && !profile.is_me && !privacyBlock ? (
+            <div className="w-full max-w-prose">
+              <TasteComparisonPanel userId={profile.id} username={profile.username} />
+            </div>
+          ) : null}
           <div className="w-full max-w-prose">
             <ActivityPanel
               items={activityItems}

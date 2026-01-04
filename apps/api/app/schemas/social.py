@@ -59,3 +59,47 @@ class LikedAuthorOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TasteCompareUser(BaseModel):
+    id: int
+    username: str
+    avatar_url: str | None = None
+
+
+class TasteCompareRating(BaseModel):
+    book_id: int
+    title: str
+    viewer_rating: int
+    target_rating: int
+    diff: int
+
+
+class TasteCompareViewerLoved(BaseModel):
+    book_id: int
+    title: str
+    cover_url: str | None = None
+    authors: list[AuthorOut] = []
+    viewer_rating: int
+
+
+class TasteCompareTargetLoved(BaseModel):
+    book_id: int
+    title: str
+    cover_url: str | None = None
+    authors: list[AuthorOut] = []
+    target_rating: int
+
+
+class TasteCompareOut(BaseModel):
+    viewer: TasteCompareUser
+    target: TasteCompareUser
+    common_count: int
+    similarity_score: float
+    mean_abs_diff: float
+    pearson: float | None = None
+    agreements: list[TasteCompareRating]
+    disagreements: list[TasteCompareRating]
+    viewer_loved_target_unread: list[TasteCompareViewerLoved]
+    target_loved_viewer_unread: list[TasteCompareTargetLoved]
+    shared_ratings: list[TasteCompareRating]

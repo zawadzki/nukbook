@@ -59,7 +59,7 @@ export default function ShelvesPage() {
   }
 
   useEffect(() => {
-    load();
+    void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -177,7 +177,7 @@ export default function ShelvesPage() {
       <main className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <h1 className="text-2xl font-semibold">My shelves</h1>
-          <a className="text-sm text-ctp-subtext0 hover:text-ctp-mauve-500" href="/books">
+          <a className="btn hover:btn-primary btn-sm" href="/books">
             Browse books
           </a>
         </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiGet } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import Panel from "@/components/Panel";
 import Avatar from "@/components/Avatar";
@@ -12,24 +11,12 @@ import {
   ShelvesPanel,
 } from "@/components/ProfilePanels";
 import { useProfilePanels } from "@/hooks/useProfilePanels";
-
-type Me = {
-  id: number;
-  email: string;
-  username: string;
-  role: string;
-  is_private: boolean;
-  avatar_url?: string | null;
-  cover_url?: string | null;
-};
+import { useMeSummary } from "@/hooks/useMeSummary";
 
 export default function MePage() {
   const [mounted, setMounted] = useState(false);
   const [token, setToken] = useState<string | null>(null);
-  const [me, setMe] = useState<Me | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
-  const [followersCount, setFollowersCount] = useState<number | null>(null);
-  const [followingCount, setFollowingCount] = useState<number | null>(null);
+  const { me, status, followersCount, followingCount } = useMeSummary(token, { enabled: mounted });
 
   const {
     shelves,
@@ -51,50 +38,6 @@ export default function MePage() {
     setMounted(true);
     setToken(getToken());
   }, []);
-
-  useEffect(() => {
-    async function run() {
-      if (!mounted) return;
-      if (!token) {
-        setStatus("Not logged in.");
-        return;
-      }
-      setStatus(null);
-
-      try {
-        const meData = await apiGet<Me>("/auth/me", "browser", undefined, token);
-        setMe(meData);
-
-        try {
-          const followers = await apiGet<{ id: number; username: string }[]>(
-            "/me/followers",
-            "browser",
-            undefined,
-            token
-          );
-          setFollowersCount(followers.length);
-        } catch {
-          setFollowersCount(null);
-        }
-
-        try {
-          const following = await apiGet<{ id: number; username: string }[]>(
-            "/me/following",
-            "browser",
-            undefined,
-            token
-          );
-          setFollowingCount(following.length);
-        } catch {
-          setFollowingCount(null);
-        }
-
-      } catch (e: any) {
-        setStatus(e?.message ?? "Failed to load profile");
-      }
-    }
-    void run();
-  }, [mounted, token]);
 
   return (
     <main className="space-y-4">
