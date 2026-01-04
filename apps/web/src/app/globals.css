@@ -4,4 +4,4 @@
   themes: false;
 }
 
-@plugin "./catppuccinTheme.latte.ts";
+@plugin "../lib/catppuccinTheme.latte.ts";

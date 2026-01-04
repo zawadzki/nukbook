@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getToken } from "@/lib/auth";
 import { usePendingRequestCount } from "@/hooks/usePendingRequestCount";
-import { getActiveHref } from "@/components/sidebarNavUtils";
+import { getActiveHref } from "@/lib/sidebarNavUtils";
 
 export default function SidebarUserMenu() {
   const token = useMemo(() => getToken(), []);

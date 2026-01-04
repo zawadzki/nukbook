@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { getActiveHref } from "@/components/sidebarNavUtils";
+import { getActiveHref } from "@/lib/sidebarNavUtils";
 
 const primaryLinks = [
   { href: "/books", label: "Books" },
