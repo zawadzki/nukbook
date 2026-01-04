@@ -5,6 +5,7 @@ import Avatar from "@/components/Avatar";
 import StarRating from "@/components/StarRating";
 import Button from "@/components/Button";
 import { formatRelativeTime } from "@/lib/time";
+import { trimWords } from "@/lib/text";
 
 export type Shelf = {
   id: number;
@@ -137,7 +138,11 @@ export function ActivityPanel({
                         <StarRating value={item.rating} size="xs" />
                       </div>
                     ) : null}
-                    {item.body ? <div className="mt-1 text-xs text-ctp-subtext0">{item.body}</div> : null}
+                    {item.body ? (
+                      <div className="mt-1 text-xs text-ctp-subtext0">
+                        {trimWords(item.body, 10)}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </SurfaceCard>

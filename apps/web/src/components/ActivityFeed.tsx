@@ -10,6 +10,7 @@ import BookCover from "@/components/BookCover";
 import Avatar from "@/components/Avatar";
 import {ChevronRightIcon} from "@heroicons/react/16/solid";
 import { formatRelativeTime } from "@/lib/time";
+import { trimWords } from "@/lib/text";
 
 type ActivityItem = {
   type: "status" | "review";
@@ -133,7 +134,9 @@ export default function ActivityFeed() {
                     </div>
                   ) : null}
 
-                  {item.body ? <div className="mt-1 text-xs text-ctp-subtext0">{item.body}</div> : null}
+                  {item.body ? (
+                    <div className="mt-1 text-xs text-ctp-subtext0">{trimWords(item.body, 10)}</div>
+                  ) : null}
                 </div>
               </div>
             </SurfaceCard>

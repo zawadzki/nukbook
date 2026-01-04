@@ -7,6 +7,8 @@ import StarRating from "@/components/StarRating";
 import Button from "@/components/Button";
 import Panel from "@/components/Panel";
 import Avatar from "@/components/Avatar";
+import { trimWords } from "@/lib/text";
+import { formatRelativeTime } from "@/lib/time";
 
 type RequestItem = {
   id: number;
@@ -157,11 +159,17 @@ export default function NotificationsPage() {
                         <StarRating value={item.data.rating} size="xs" />
                       </span>
                     ) : null}
-                    {item.data.body ? <div className="mt-1 text-xs text-ctp-subtext0">{item.data.body}</div> : null}
+                    {item.data.body ? (
+                      <div className="mt-1 text-xs text-ctp-subtext0">
+                        {trimWords(item.data.body, 10)}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               )}
-              <div className="text-xs text-ctp-subtext0">{new Date(item.created_at).toLocaleString()}</div>
+              <div className="text-xs text-ctp-subtext0">
+                {formatRelativeTime(item.created_at) ?? new Date(item.created_at).toLocaleString()}
+              </div>
             </Panel>
           ))}
         </ul>
