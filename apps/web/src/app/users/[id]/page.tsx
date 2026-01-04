@@ -5,17 +5,17 @@ import { useRouter } from "next/navigation";
 import { ApiError, apiGet, apiSend } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { pushToast } from "@/lib/toast";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import Avatar from "@/components/Avatar";
-import ProfileCover from "@/components/ProfileCover";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import Avatar from "@/components/ui/Avatar";
+import ProfileCover from "@/components/ui/ProfileCover";
 import {
   ActivityPanel,
   LikedAuthorsPanel,
   ShelvesPanel,
-} from "@/components/ProfilePanels";
+} from "@/components/templates/ProfilePanels";
 import { useProfilePanels } from "@/hooks/useProfilePanels";
-import TasteComparisonPanel from "@/components/TasteComparisonPanel";
+import TasteComparisonPanel from "@/components/templates/TasteComparisonPanel";
 
 type Profile = {
   id: number;

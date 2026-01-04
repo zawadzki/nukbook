@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { apiGet, apiSend } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
 
 type FollowRequest = {
   id: number;

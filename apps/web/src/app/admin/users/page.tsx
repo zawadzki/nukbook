@@ -6,7 +6,7 @@ import { clearToken } from "@/lib/auth";
 import { apiGet, apiSend } from "@/lib/api";
 import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
-import Panel from "@/components/Panel";
+import Panel from "@/components/ui/Panel";
 
 type UserRow = {
   id: number;

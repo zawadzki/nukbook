@@ -7,9 +7,9 @@ import { apiBase, apiGet, apiSend } from "@/lib/api";
 import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
 import { mediaUrl } from "@/lib/media";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 type AuthorRow = {
   id: number;

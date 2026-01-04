@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import { apiGet } from "@/lib/api";
-import StarRatingAvg from "@/components/StarRatingAvg";
+import StarRatingAvg from "@/components/ui/StarRatingAvg";
 import { mediaUrl } from "@/lib/media";
-import AuthorLikeButton from "@/components/AuthorLikeButton";
-import Panel from "@/components/Panel";
-import MediaPlaceholder from "@/components/MediaPlaceholder";
-import BookCover from "@/components/BookCover";
+import AuthorLikeButton from "@/components/ui/AuthorLikeButton";
+import Panel from "@/components/ui/Panel";
+import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import BookCover from "@/components/ui/BookCover";
 import { ChevronLeftIcon } from "@heroicons/react/16/solid";
 
 type Author = {

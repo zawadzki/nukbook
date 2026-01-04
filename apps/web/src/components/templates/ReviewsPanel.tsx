@@ -2,19 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import ReviewForm from "@/components/ReviewForm";
+import ReviewForm from "@/components/templates/ReviewForm";
 import { apiGet, apiSend } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
 import { PencilSquareIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import StarRating from "@/components/StarRating";
-import StarRatingInput from "@/components/StarRatingInput";
+import StarRating from "@/components/ui/StarRating";
+import StarRatingInput from "@/components/ui/StarRatingInput";
 import { useBookShelves } from "@/hooks/useBookShelves";
 import { pushToast } from "@/lib/toast";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import SurfaceBadge from "@/components/SurfaceBadge";
-import Avatar from "@/components/Avatar";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import SurfaceBadge from "@/components/ui/SurfaceBadge";
+import Avatar from "@/components/ui/Avatar";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 type Me = { id: number; email: string; username: string; role: string };
 

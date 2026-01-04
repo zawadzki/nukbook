@@ -4,11 +4,11 @@ import { use, useEffect, useMemo, useState } from "react";
 import { getToken } from "@/lib/auth";
 import { apiGet, apiSend } from "@/lib/api";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import BookCover from "@/components/BookCover";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import BookCover from "@/components/ui/BookCover";
 import {ChevronLeftIcon} from "@heroicons/react/16/solid";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 type Shelf = { id: number; name: string; is_system: boolean; visibility: "public" | "followers" | "private" };
 type Book = {

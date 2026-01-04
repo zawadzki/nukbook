@@ -1,9 +1,9 @@
-import Panel from "@/components/Panel";
-import SurfaceCard from "@/components/SurfaceCard";
-import BookCover from "@/components/BookCover";
-import Avatar from "@/components/Avatar";
-import StarRating from "@/components/StarRating";
-import Button from "@/components/Button";
+import Panel from "@/components/ui/Panel";
+import SurfaceCard from "@/components/ui/SurfaceCard";
+import BookCover from "@/components/ui/BookCover";
+import Avatar from "@/components/ui/Avatar";
+import StarRating from "@/components/ui/StarRating";
+import Button from "@/components/ui/Button";
 import { formatRelativeTime } from "@/lib/time";
 import { trimWords } from "@/lib/text";
 

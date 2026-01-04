@@ -1,7 +1,7 @@
 import { apiGet } from "@/lib/api";
-import StarRatingAvg from "@/components/StarRatingAvg";
-import Panel from "@/components/Panel";
-import BookCover from "@/components/BookCover";
+import StarRatingAvg from "@/components/ui/StarRatingAvg";
+import Panel from "@/components/ui/Panel";
+import BookCover from "@/components/ui/BookCover";
 
 type Book = {
   id: number;

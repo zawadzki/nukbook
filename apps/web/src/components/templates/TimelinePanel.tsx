@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiGet, apiSend } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 import { ChevronRightIcon } from "@heroicons/react/16/solid";
-import Panel from "@/components/Panel";
-import SurfaceCard from "@/components/SurfaceCard";
-import BookCover from "@/components/BookCover";
+import Panel from "@/components/ui/Panel";
+import SurfaceCard from "@/components/ui/SurfaceCard";
+import BookCover from "@/components/ui/BookCover";
 
 type TimelineItem = {
   id: number;

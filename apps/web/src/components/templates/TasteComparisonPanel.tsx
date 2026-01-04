@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Panel from "@/components/Panel";
+import Panel from "@/components/ui/Panel";
 import { ApiError, apiGet } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import TasteCompareStats from "@/components/TasteCompareStats";
+import TasteCompareStats from "@/components/ui/TasteCompareStats";
 
 type TasteComparisonPanelProps = {
   userId: number;

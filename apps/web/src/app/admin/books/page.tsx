@@ -7,12 +7,12 @@ import { apiBase, apiGet, apiSend } from "@/lib/api";
 import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
 import { mediaUrl } from "@/lib/media";
-import AuthorPicker from "@/components/AuthorPicker";
-import TagPicker from "@/components/TagPicker";
-import GenrePicker from "@/components/GenrePicker";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import AuthorPicker from "@/components/ui/AuthorPicker";
+import TagPicker from "@/components/ui/TagPicker";
+import GenrePicker from "@/components/ui/GenrePicker";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 type AuthorOpt = { id: number; name: string };
 type TagOpt = { id: number; name: string };

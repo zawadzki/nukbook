@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import Panel from "@/components/Panel";
-import SurfaceCard from "@/components/SurfaceCard";
-import BookCover from "@/components/BookCover";
-import StarRatingAvg from "@/components/StarRatingAvg";
+import Panel from "@/components/ui/Panel";
+import SurfaceCard from "@/components/ui/SurfaceCard";
+import BookCover from "@/components/ui/BookCover";
+import StarRatingAvg from "@/components/ui/StarRatingAvg";
 import {ChevronRightIcon} from "@heroicons/react/16/solid";
 
 type Book = {

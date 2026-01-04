@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getToken } from "@/lib/auth";
 import { apiGet } from "@/lib/api";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 import { handlePickerError } from "@/lib/pickerErrors";
 
 type TagOpt = { id: number; name: string };

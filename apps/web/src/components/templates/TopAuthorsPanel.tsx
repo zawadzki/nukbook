@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { ChevronRightIcon } from "@heroicons/react/16/solid";
 import { apiGet } from "@/lib/api";
-import Panel from "@/components/Panel";
-import SurfaceCard from "@/components/SurfaceCard";
-import Avatar from "@/components/Avatar";
+import Panel from "@/components/ui/Panel";
+import SurfaceCard from "@/components/ui/SurfaceCard";
+import Avatar from "@/components/ui/Avatar";
 
 type TopAuthor = {
   id: number;

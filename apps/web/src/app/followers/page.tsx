@@ -1,7 +1,7 @@
 "use client";
 
-import Panel from "@/components/Panel";
-import Avatar from "@/components/Avatar";
+import Panel from "@/components/ui/Panel";
+import Avatar from "@/components/ui/Avatar";
 import { useFollowList } from "@/hooks/useFollowList";
 
 export default function FollowersPage() {

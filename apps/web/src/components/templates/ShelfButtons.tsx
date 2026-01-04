@@ -5,8 +5,8 @@ import { apiSend } from "@/lib/api";
 import { emitShelvesUpdated } from "@/lib/events";
 import { useBookShelves, type ShelfState } from "@/hooks/useBookShelves";
 import { pushToast } from "@/lib/toast";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
 
 const LABELS: Record<string, string> = {
   "want-to-read": "Want to read",

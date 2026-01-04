@@ -1,4 +1,4 @@
-import { maskHalfClass, ratingSizeClass } from "@/components/ratingUtils";
+import { maskHalfClass, ratingSizeClass } from "@/components/ui/ratingUtils";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));

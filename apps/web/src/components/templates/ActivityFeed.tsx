@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import StarRating from "@/components/StarRating";
-import Panel from "@/components/Panel";
-import SurfaceCard from "@/components/SurfaceCard";
-import BookCover from "@/components/BookCover";
-import Avatar from "@/components/Avatar";
+import StarRating from "@/components/ui/StarRating";
+import Panel from "@/components/ui/Panel";
+import SurfaceCard from "@/components/ui/SurfaceCard";
+import BookCover from "@/components/ui/BookCover";
+import Avatar from "@/components/ui/Avatar";
 import {ChevronRightIcon} from "@heroicons/react/16/solid";
 import { formatRelativeTime } from "@/lib/time";
 import { trimWords } from "@/lib/text";

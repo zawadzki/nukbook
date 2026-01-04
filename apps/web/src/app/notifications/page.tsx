@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import StarRating from "@/components/StarRating";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import Avatar from "@/components/Avatar";
+import StarRating from "@/components/ui/StarRating";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import Avatar from "@/components/ui/Avatar";
 import { trimWords } from "@/lib/text";
 import { formatRelativeTime } from "@/lib/time";
 

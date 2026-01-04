@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { getToken } from "@/lib/auth";
-import Panel from "@/components/Panel";
-import Avatar from "@/components/Avatar";
-import ProfileCover from "@/components/ProfileCover";
+import Panel from "@/components/ui/Panel";
+import Avatar from "@/components/ui/Avatar";
+import ProfileCover from "@/components/ui/ProfileCover";
 import {
   ActivityPanel,
   LikedAuthorsPanel,
   ShelvesPanel,
-} from "@/components/ProfilePanels";
+} from "@/components/templates/ProfilePanels";
 import { useProfilePanels } from "@/hooks/useProfilePanels";
 import { useMeSummary } from "@/hooks/useMeSummary";
 

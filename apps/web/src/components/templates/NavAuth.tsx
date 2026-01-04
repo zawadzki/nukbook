@@ -5,10 +5,10 @@ import { clearToken, getToken } from "@/lib/auth";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { apiGet, apiSend } from "@/lib/api";
-import StarRating from "@/components/StarRating";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import Avatar from "@/components/Avatar";
+import StarRating from "@/components/ui/StarRating";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import Avatar from "@/components/ui/Avatar";
 import { usePendingRequestCount } from "@/hooks/usePendingRequestCount";
 
 type Me = { id: number; email: string; username: string; role: string; avatar_url?: string | null };

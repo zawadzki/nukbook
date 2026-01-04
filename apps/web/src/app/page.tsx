@@ -1,7 +1,7 @@
-import TimelinePanel from "@/components/TimelinePanel";
-import RecommendationsPanel from "@/components/RecommendationsPanel";
-import ActivityFeed from "@/components/ActivityFeed";
-import TopAuthorsPanel from "@/components/TopAuthorsPanel";
+import TimelinePanel from "@/components/templates/TimelinePanel";
+import RecommendationsPanel from "@/components/templates/RecommendationsPanel";
+import ActivityFeed from "@/components/templates/ActivityFeed";
+import TopAuthorsPanel from "@/components/templates/TopAuthorsPanel";
 
 export default function Home() {
   return (

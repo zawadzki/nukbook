@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import {NavAuth} from "@/components/NavAuth";
-import NavSearch from "@/components/NavSearch";
-import ToastHost from "@/components/ToastHost";
+import {NavAuth} from "@/components/templates/NavAuth";
+import NavSearch from "@/components/templates/NavSearch";
+import ToastHost from "@/components/ui/ToastHost";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
-import SidebarPrimaryMenu from "@/components/SidebarPrimaryMenu";
-import SidebarUserMenu from "@/components/SidebarUserMenu";
-import Footer from "@/components/Footer";
+import SidebarPrimaryMenu from "@/components/templates/SidebarPrimaryMenu";
+import SidebarUserMenu from "@/components/templates/SidebarUserMenu";
+import Footer from "@/components/templates/Footer";
 import "./globals.css";
 
 const nunito = Nunito({ subsets: ['latin'] })

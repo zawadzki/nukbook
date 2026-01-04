@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { apiSend } from "@/lib/api";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");

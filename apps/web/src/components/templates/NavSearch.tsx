@@ -3,9 +3,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { apiGet } from "@/lib/api";
-import BookCover from "@/components/BookCover";
-import Avatar from "@/components/Avatar";
-import Panel from "@/components/Panel";
+import BookCover from "@/components/ui/BookCover";
+import Avatar from "@/components/ui/Avatar";
+import Panel from "@/components/ui/Panel";
 
 type SearchAuthor = {
   id: number;

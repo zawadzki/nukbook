@@ -1,7 +1,7 @@
 import { apiGet } from "@/lib/api";
 import { mediaUrl } from "@/lib/media";
-import Panel from "@/components/Panel";
-import MediaPlaceholder from "@/components/MediaPlaceholder";
+import Panel from "@/components/ui/Panel";
+import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 
 type Author = {
   id: number;

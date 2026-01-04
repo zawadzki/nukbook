@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { apiGet } from "@/lib/api";
-import type { ActivityItem, LikedAuthor, Shelf } from "@/components/ProfilePanels";
+import type { ActivityItem, LikedAuthor, Shelf } from "@/components/templates/ProfilePanels";
 
 type UseProfilePanelsOptions = {
   userId: number | null;

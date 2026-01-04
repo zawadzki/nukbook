@@ -1,4 +1,4 @@
-import { maskStarClass, ratingSizeClass } from "@/components/ratingUtils";
+import { maskStarClass, ratingSizeClass } from "@/components/ui/ratingUtils";
 
 export default function StarRating({
   value,

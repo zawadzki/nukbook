@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { apiSend } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import StarRatingInput from "@/components/StarRatingInput";
+import StarRatingInput from "@/components/ui/StarRatingInput";
 import { pushToast } from "@/lib/toast";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 
 export default ({
                   bookId,

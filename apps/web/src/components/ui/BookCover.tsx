@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { mediaUrl } from "@/lib/media";
-import MediaPlaceholder from "@/components/MediaPlaceholder";
+import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 
 type PlaceholderVariant = "base" | "mantle";
 

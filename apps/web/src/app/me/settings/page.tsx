@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { clearToken, getToken } from "@/lib/auth";
 import { apiBase, apiSend } from "@/lib/api";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import Avatar from "@/components/Avatar";
-import ProfileCover from "@/components/ProfileCover";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import Avatar from "@/components/ui/Avatar";
+import ProfileCover from "@/components/ui/ProfileCover";
 import { useMeSummary } from "@/hooks/useMeSummary";
 
 export default function SettingsPage() {

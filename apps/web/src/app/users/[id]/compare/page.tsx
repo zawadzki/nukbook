@@ -3,12 +3,12 @@
 import { use, useEffect, useMemo, useState } from "react";
 import { ApiError, apiGet } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import Panel from "@/components/Panel";
-import Button from "@/components/Button";
-import StarRating from "@/components/StarRating";
+import Panel from "@/components/ui/Panel";
+import Button from "@/components/ui/Button";
+import StarRating from "@/components/ui/StarRating";
 import { StarIcon } from "@heroicons/react/24/solid";
-import BookCover from "@/components/BookCover";
-import TasteCompareStats, { similarityClass } from "@/components/TasteCompareStats";
+import BookCover from "@/components/ui/BookCover";
+import TasteCompareStats, { similarityClass } from "@/components/ui/TasteCompareStats";
 import {ChevronLeftIcon} from "@heroicons/react/16/solid";
 
 type CompareUser = {

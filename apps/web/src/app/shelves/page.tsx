@@ -5,9 +5,9 @@ import { getToken } from "@/lib/auth";
 import { apiGet, apiSend } from "@/lib/api";
 import { pushToast } from "@/lib/toast";
 import { TrashIcon, PencilSquareIcon, XMarkIcon, CheckIcon } from "@heroicons/react/24/outline";
-import Button from "@/components/Button";
-import Panel from "@/components/Panel";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import Button from "@/components/ui/Button";
+import Panel from "@/components/ui/Panel";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 type Shelf = {
   id: number;

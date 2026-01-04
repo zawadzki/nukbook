@@ -1,6 +1,6 @@
 "use client";
 
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/ui/Avatar";
 
 type TasteCompareStatsData = {
   target: { id: number; username: string; avatar_url?: string | null };

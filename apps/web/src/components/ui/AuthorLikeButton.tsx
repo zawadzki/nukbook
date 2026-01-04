@@ -5,7 +5,7 @@ import { apiGet, apiSend } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 
 export default function AuthorLikeButton({ authorId }: { authorId: number }) {
   const token = useMemo(() => getToken(), []);

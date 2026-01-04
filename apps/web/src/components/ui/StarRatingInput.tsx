@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { maskStarClass, ratingSizeClass } from "@/components/ratingUtils";
+import { maskStarClass, ratingSizeClass } from "@/components/ui/ratingUtils";
 
 export default function StarRatingInput({
   value,
