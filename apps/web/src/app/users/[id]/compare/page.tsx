@@ -202,7 +202,7 @@ export default function TasteComparePage({ params }: { params: Promise<{ id: str
           <div className="grid gap-4 lg:grid-cols-2">
             <Panel padding="lg">
               <h2 className="text-lg font-semibold">Books you loved</h2>
-              <p className="text-xs text-ctp-subtext0">They haven’t read these yet.</p>
+              <p className="text-xs text-ctp-subtext0">@{data.target.username} haven’t read these yet.</p>
 
               <ul className="list bg-base-100 rounded-box border border-ctp-surface0 mt-3">
                 {data.viewer_loved_target_unread.length === 0 ? (

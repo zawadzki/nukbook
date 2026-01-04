@@ -38,6 +38,17 @@ const STATUS_LABELS: Record<string, string> = {
   dropped: "dropped",
 };
 
+const LABELS: Record<string, string> = {
+  "want-to-read": "Want to read",
+  reading: "Reading",
+  read: "Read",
+  dropped: "Dropped",
+};
+
+function displayShelfName(name: string) {
+  return LABELS[name] ?? name;
+}
+
 type ShelvesPanelProps = {
   title?: string;
   shelves: Shelf[];
@@ -57,7 +68,7 @@ export function ShelvesPanel({ title = "Shelves", shelves, status }: ShelvesPane
             <SurfaceCard key={s.id} padding="sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="font-medium">{s.name}</div>
+                  <div className="font-medium">{displayShelfName(s.name)}</div>
                   <div className="text-xs text-ctp-subtext0">
                     {s.book_count} books · {s.visibility}
                   </div>
