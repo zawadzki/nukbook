@@ -6,7 +6,7 @@ import { clearToken } from "@/lib/auth";
 import { apiBase, apiGet, apiSend } from "@/lib/api";
 import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 import AuthorPicker from "@/components/ui/AuthorPicker";
 import TagPicker from "@/components/ui/TagPicker";
 import GenrePicker from "@/components/ui/GenrePicker";
@@ -529,9 +529,15 @@ export default function AdminBooksPage() {
                   <div className="flex flex-col items-center gap-2">
                     {b.cover_url ? (
                       <img
-                        src={mediaUrl(b.cover_url) ?? ""}
+                        src={mediaThumbUrl(b.cover_url, "xs") ?? mediaUrl(b.cover_url) ?? ""}
                         alt={`${b.title} cover`}
                         className="h-16 w-12 rounded object-cover"
+                        onError={(e) => {
+                          const fallback = mediaUrl(b.cover_url);
+                          if (fallback && e.currentTarget.src !== fallback) {
+                            e.currentTarget.src = fallback;
+                          }
+                        }}
                       />
                     ) : (
                       <div className="flex h-16 w-12 items-center justify-center rounded border text-[10px] opacity-60">

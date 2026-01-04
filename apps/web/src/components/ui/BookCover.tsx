@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 
 type PlaceholderVariant = "base" | "mantle";
@@ -13,6 +13,7 @@ type BookCoverProps = {
   placeholderClassName?: string;
   placeholder?: ReactNode;
   placeholderVariant?: PlaceholderVariant;
+  thumbSize?: "xs" | "sm" | "md" | "lg";
 };
 
 export default function BookCover({
@@ -24,7 +25,9 @@ export default function BookCover({
   placeholderClassName,
   placeholder = "—",
   placeholderVariant,
+  thumbSize = "sm",
 }: BookCoverProps) {
+  const resolvedThumb = mediaThumbUrl(coverUrl, thumbSize);
   const resolved = mediaUrl(coverUrl);
   const altText = alt ?? (title ? `${title} cover` : "Book cover");
   const imgClasses = [
@@ -37,7 +40,13 @@ export default function BookCover({
   const placeholderClasses = [className, placeholderClassName].filter(Boolean).join(" ");
 
   if (resolved) {
-    return <img src={resolved} alt={altText} className={imgClasses} />;
+    return (
+      <img
+        src={resolvedThumb ?? resolved}
+        alt={altText}
+        className={imgClasses}
+      />
+    );
   }
 
   return (

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { apiGet } from "@/lib/api";
 import StarRatingAvg from "@/components/ui/StarRatingAvg";
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 import AuthorLikeButton from "@/components/ui/AuthorLikeButton";
 import Panel from "@/components/ui/Panel";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
@@ -53,7 +53,7 @@ export default async function AuthorPage({
         <div className="flex flex-wrap items-start gap-4">
           {mediaUrl(author.photo_url) ? (
             <img
-              src={mediaUrl(author.photo_url) ?? ""}
+              src={mediaThumbUrl(author.photo_url, "sm") ?? mediaUrl(author.photo_url) ?? ""}
               alt={`${author.name} portrait`}
               className="h-24 w-24 rounded-md object-cover"
             />

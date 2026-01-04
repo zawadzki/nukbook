@@ -1,5 +1,5 @@
 import { apiGet } from "@/lib/api";
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 import Panel from "@/components/ui/Panel";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 
@@ -28,7 +28,7 @@ export default async function AuthorsPage() {
               <div className="flex flex-wrap items-start gap-4">
                 {mediaUrl(a.photo_url) ? (
                   <img
-                    src={mediaUrl(a.photo_url) ?? ""}
+                    src={mediaThumbUrl(a.photo_url, "sm") ?? mediaUrl(a.photo_url) ?? ""}
                     alt={`${a.name} portrait`}
                     className="h-16 w-16 rounded-md border border-ctp-surface1 object-cover"
                   />

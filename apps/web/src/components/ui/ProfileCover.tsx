@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 
 type PlaceholderVariant = "base" | "mantle";
@@ -21,10 +21,17 @@ export default function ProfileCover({
   placeholder = "No cover",
   placeholderVariant = "base",
 }: ProfileCoverProps) {
+  const resolvedThumb = mediaThumbUrl(coverUrl, "lg");
   const resolved = mediaUrl(coverUrl);
 
   if (resolved) {
-    return <img src={resolved} alt={alt} className={imgClassName} />;
+    return (
+      <img
+        src={resolvedThumb ?? resolved}
+        alt={alt}
+        className={imgClassName}
+      />
+    );
   }
 
   return (

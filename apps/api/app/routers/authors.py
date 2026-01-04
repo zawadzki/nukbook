@@ -2,24 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.book_stats import book_with_stats_stmt, hydrate_books
 from app.deps import get_current_user, get_db
-from app.models import Author, AuthorLike, Book, Review, User
+from app.models import Author, AuthorLike, Book, User
 from app.schemas.author import AuthorLikeIn, AuthorOut, AuthorTopOut
 from app.schemas.book import BookOut
 
 router = APIRouter(prefix="/authors", tags=["authors"])
-
-
-def _book_with_stats_stmt():
-    return (
-        select(
-            Book,
-            func.avg(Review.rating).filter(Review.is_hidden == False).label("rating_avg"),  # noqa: E712
-            func.count(Review.id).filter(Review.is_hidden == False).label("rating_count"),  # noqa: E712
-        )
-        .outerjoin(Review, Review.book_id == Book.id)
-        .group_by(Book.id)
-    )
 
 
 @router.get("", response_model=list[AuthorOut])
@@ -122,15 +111,9 @@ def list_author_books(author_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Author not found")
 
     stmt = (
-        _book_with_stats_stmt()
+        book_with_stats_stmt()
         .where(Book.authors.any(Author.id == author_id))
         .order_by(Book.id.desc())
     )
 
-    rows = db.execute(stmt).all()
-    out: list[BookOut] = []
-    for book, rating_avg, rating_count in rows:
-        book.rating_avg = float(rating_avg) if rating_avg is not None else None
-        book.rating_count = int(rating_count or 0)
-        out.append(book)
-    return out
+    return hydrate_books(db.execute(stmt).all())

@@ -1,6 +1,7 @@
 fastapi==0.115.6
 uvicorn[standard]==0.32.1
 python-multipart==0.0.12
+Pillow==10.4.0
 
 # DB
 sqlalchemy==2.0.36

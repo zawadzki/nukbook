@@ -15,7 +15,7 @@ from app.schemas import (
     ProfileOut,
     TasteCompareOut,
 )
-from app.core.media import save_media_file
+from app.core.media import save_media_with_thumbs, USER_AVATAR_SIZES, USER_COVER_SIZES
 
 router = APIRouter(tags=["social"])
 
@@ -86,11 +86,11 @@ def upload_avatar(
     me: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    avatar_url = save_media_file(file, f"users/{me.id}/avatar")
-    me.avatar_url = avatar_url
+    thumbs = save_media_with_thumbs(file, f"users/{me.id}/avatar", USER_AVATAR_SIZES)
+    me.avatar_url = thumbs["original"]
     db.commit()
     db.refresh(me)
-    return {"id": me.id, "avatar_url": me.avatar_url}
+    return {"id": me.id, "avatar_url": me.avatar_url, "avatar_thumbs": thumbs}
 
 
 @router.post("/me/cover")
@@ -99,11 +99,11 @@ def upload_cover(
     me: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    cover_url = save_media_file(file, f"users/{me.id}/cover")
-    me.cover_url = cover_url
+    thumbs = save_media_with_thumbs(file, f"users/{me.id}/cover", USER_COVER_SIZES)
+    me.cover_url = thumbs["original"]
     db.commit()
     db.refresh(me)
-    return {"id": me.id, "cover_url": me.cover_url}
+    return {"id": me.id, "cover_url": me.cover_url, "cover_thumbs": thumbs}
 
 
 @router.post("/users/{user_id}/follow")

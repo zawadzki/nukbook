@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.core.media import save_media_file
+from app.core.media import AUTHOR_PHOTO_SIZES, save_media_with_thumbs
 from app.deps import get_db, require_admin
 from app.models import Author, User
 from app.schemas import AuthorCreate, AuthorUpdate
@@ -167,9 +167,9 @@ def upload_author_photo(
     if not a:
         raise HTTPException(status_code=404, detail="Author not found")
 
-    photo_url = save_media_file(file, f"authors/{author_id}")
-    a.photo_url = photo_url
+    thumbs = save_media_with_thumbs(file, f"authors/{author_id}", AUTHOR_PHOTO_SIZES)
+    a.photo_url = thumbs["original"]
     db.commit()
     db.refresh(a)
 
-    return {"id": a.id, "photo_url": a.photo_url}
+    return {"id": a.id, "photo_url": a.photo_url, "photo_thumbs": thumbs}

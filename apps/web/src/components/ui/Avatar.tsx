@@ -1,4 +1,4 @@
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 
 type AvatarSize = "xxs" | "xs" | "sm" | "md" | "lg";
 
@@ -40,6 +40,8 @@ export default function Avatar({
   status = null,
   wrapperClassName,
 }: AvatarProps) {
+  const sizeLabel = size === "xxs" ? "xs" : size;
+  const resolvedThumb = mediaThumbUrl(src, sizeLabel);
   const resolved = mediaUrl(src);
   const initial = initialFromUsername(username);
   const classes = [
@@ -65,7 +67,11 @@ export default function Avatar({
         aria-label={username ? `@${username} avatar` : "Avatar"}
       >
         {resolved ? (
-          <img src={resolved} alt="" className="h-full w-full object-cover" />
+          <img
+            src={resolvedThumb ?? resolved}
+            alt=""
+            className="h-full w-full object-cover"
+          />
         ) : (
           <span className={textSizeClasses[size]}>{initial}</span>
         )}

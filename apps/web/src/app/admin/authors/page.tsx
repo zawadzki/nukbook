@@ -6,7 +6,7 @@ import { clearToken } from "@/lib/auth";
 import { apiBase, apiGet, apiSend } from "@/lib/api";
 import { getRequiredToken } from "@/lib/adminApi";
 import { handleAdminError } from "@/lib/adminErrors";
-import { mediaUrl } from "@/lib/media";
+import { mediaThumbUrl, mediaUrl } from "@/lib/media";
 import Button from "@/components/ui/Button";
 import Panel from "@/components/ui/Panel";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
@@ -323,9 +323,15 @@ export default function AdminAuthorsPage() {
                   <div className="flex flex-col items-center gap-2">
                     {a.photo_url ? (
                       <img
-                        src={mediaUrl(a.photo_url) ?? ""}
+                        src={mediaThumbUrl(a.photo_url, "xs") ?? mediaUrl(a.photo_url) ?? ""}
                         alt={`${a.name} portrait`}
                         className="h-12 w-12 rounded object-cover"
+                        onError={(e) => {
+                          const fallback = mediaUrl(a.photo_url);
+                          if (fallback && e.currentTarget.src !== fallback) {
+                            e.currentTarget.src = fallback;
+                          }
+                        }}
                       />
                     ) : (
                       <div className="flex h-12 w-12 items-center justify-center rounded border text-[10px] opacity-60">

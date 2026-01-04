@@ -60,6 +60,7 @@ export default async function BookPage({
             className="h-38 w-27"
             placeholder="No cover"
             placeholderVariant="mantle"
+            thumbSize="lg"
           />
 
           <div className="min-w-0 flex-1">

@@ -1,8 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
+from app.core.admin_taxonomy import (
+    LookupParams,
+    ListParams,
+    create_item,
+    delete_item,
+    list_items,
+    list_params,
+    lookup_items,
+    lookup_params,
+    update_item,
+)
 from app.deps import get_db, require_admin
 from app.models import Tag, User
 from app.schemas import TagCreate
@@ -15,44 +24,18 @@ router = APIRouter(prefix="/admin/tags", tags=["admin"])
 def list_tags(
     _admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    q: str | None = Query(default=None, min_length=1),
-    limit: int = Query(default=50, ge=1, le=200),
-    offset: int = Query(default=0, ge=0),
+    params: ListParams = Depends(list_params),
 ):
-    stmt = select(Tag)
-
-    if q:
-        like = f"%{q}%"
-        stmt = stmt.where(Tag.name.ilike(like))
-
-    stmt = stmt.order_by(Tag.name.asc()).limit(limit).offset(offset)
-    tags = db.execute(stmt).scalars().all()
-
-    return {
-        "items": [{"id": t.id, "name": t.name} for t in tags],
-        "limit": limit,
-        "offset": offset,
-    }
+    return list_items(db, Tag, params.q, params.limit, params.offset)
 
 
 @router.get("/lookup")
 def lookup_tags(
     _admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    q: str = Query(min_length=1),
-    limit: int = Query(default=20, ge=1, le=50),
+    params: LookupParams = Depends(lookup_params),
 ):
-    like = f"%{q}%"
-
-    stmt = (
-        select(Tag.id, Tag.name)
-        .where(Tag.name.ilike(like))
-        .order_by(Tag.name.asc())
-        .limit(limit)
-    )
-
-    rows = db.execute(stmt).all()
-    return {"items": [{"id": rid, "name": name} for (rid, name) in rows]}
+    return lookup_items(db, Tag, params.q, params.limit)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
@@ -61,22 +44,7 @@ def create_tag(
     _admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    name = payload.name.strip()
-    existing = db.execute(select(Tag).where(Tag.name == name)).scalar_one_or_none()
-    if existing:
-        raise HTTPException(status_code=409, detail="Tag with this name already exists")
-
-    t = Tag(name=name)
-    db.add(t)
-
-    try:
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=409, detail="Tag with this name already exists")
-
-    db.refresh(t)
-    return {"id": t.id, "name": t.name}
+    return create_item(db, Tag, payload.name, "Tag with this name already exists")
 
 
 @router.patch("/{tag_id}")
@@ -86,27 +54,7 @@ def update_tag(
     _admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    t = db.get(Tag, tag_id)
-    if not t:
-        raise HTTPException(status_code=404, detail="Tag not found")
-
-    name = payload.name.strip()
-    if not name:
-        raise HTTPException(status_code=422, detail="Name cannot be empty")
-
-    existing = db.execute(select(Tag).where(Tag.name == name, Tag.id != tag_id)).scalar_one_or_none()
-    if existing:
-        raise HTTPException(status_code=409, detail="Tag with this name already exists")
-
-    t.name = name
-    try:
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=409, detail="Tag with this name already exists")
-
-    db.refresh(t)
-    return {"id": t.id, "name": t.name}
+    return update_item(db, Tag, tag_id, payload.name, "Tag not found", "Tag with this name already exists")
 
 
 @router.delete("/{tag_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -115,10 +63,5 @@ def delete_tag(
     _admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    t = db.get(Tag, tag_id)
-    if not t:
-        raise HTTPException(status_code=404, detail="Tag not found")
-
-    db.delete(t)
-    db.commit()
+    delete_item(db, Tag, tag_id, "Tag not found")
     return None

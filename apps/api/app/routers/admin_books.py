@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.media import save_media_file
+from app.core.media import BOOK_COVER_SIZES, save_media_with_thumbs
 from app.deps import get_db, require_admin
 from app.models import Author, Book, Genre, Tag, User
 from app.schemas import BookCreate, BookUpdate
@@ -66,7 +66,7 @@ def create_book(
 
     if payload.author_ids:
         # Fetch authors and assign relationship
-        authors = (
+        authors = list(
             db.execute(select(Author).where(Author.id.in_(payload.author_ids)))
             .scalars()
             .all()
@@ -80,7 +80,7 @@ def create_book(
         book.authors = authors
 
     if payload.tag_ids:
-        tags = db.execute(select(Tag).where(Tag.id.in_(payload.tag_ids))).scalars().all()
+        tags = list(db.execute(select(Tag).where(Tag.id.in_(payload.tag_ids))).scalars().all())
         found_ids = {t.id for t in tags}
         missing = [tid for tid in payload.tag_ids if tid not in found_ids]
         if missing:
@@ -88,7 +88,7 @@ def create_book(
         book.tags = tags
 
     if payload.genre_ids:
-        genres = db.execute(select(Genre).where(Genre.id.in_(payload.genre_ids))).scalars().all()
+        genres = list(db.execute(select(Genre).where(Genre.id.in_(payload.genre_ids))).scalars().all())
         found_ids = {g.id for g in genres}
         missing = [gid for gid in payload.genre_ids if gid not in found_ids]
         if missing:
@@ -140,7 +140,7 @@ def update_book(
     if "author_ids" in data:
         ids = data["author_ids"] or []
         if ids:
-            authors = db.execute(select(Author).where(Author.id.in_(ids))).scalars().all()
+            authors = list(db.execute(select(Author).where(Author.id.in_(ids))).scalars().all())
             found = {a.id for a in authors}
             missing = [aid for aid in ids if aid not in found]
             if missing:
@@ -153,7 +153,7 @@ def update_book(
     if "tag_ids" in data:
         ids = data["tag_ids"] or []
         if ids:
-            tags = db.execute(select(Tag).where(Tag.id.in_(ids))).scalars().all()
+            tags = list(db.execute(select(Tag).where(Tag.id.in_(ids))).scalars().all())
             found = {t.id for t in tags}
             missing = [tid for tid in ids if tid not in found]
             if missing:
@@ -165,7 +165,7 @@ def update_book(
     if "genre_ids" in data:
         ids = data["genre_ids"] or []
         if ids:
-            genres = db.execute(select(Genre).where(Genre.id.in_(ids))).scalars().all()
+            genres = list(db.execute(select(Genre).where(Genre.id.in_(ids))).scalars().all())
             found = {g.id for g in genres}
             missing = [gid for gid in ids if gid not in found]
             if missing:
@@ -216,9 +216,9 @@ def upload_book_cover(
     if not b:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    cover_url = save_media_file(file, f"books/{book_id}")
-    b.cover_url = cover_url
+    thumbs = save_media_with_thumbs(file, f"books/{book_id}", BOOK_COVER_SIZES)
+    b.cover_url = thumbs["original"]
     db.commit()
     db.refresh(b)
 
-    return {"id": b.id, "cover_url": b.cover_url}
+    return {"id": b.id, "cover_url": b.cover_url, "cover_thumbs": thumbs}
