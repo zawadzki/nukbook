@@ -11,15 +11,15 @@ type TasteCompareStatsData = {
 };
 
 export function similarityClass(score: number): string {
-  if (score <= 10) return "text-ctp-red-500";
-  if (score <= 20) return "text-ctp-red-400";
-  if (score <= 30) return "text-ctp-red-300";
-  if (score <= 45) return "text-ctp-rosewater-500";
-  if (score <= 55) return "text-ctp-rosewater-400";
-  if (score <= 65) return "text-ctp-rosewater-300";
-  if (score <= 75) return "text-ctp-green-300";
-  if (score <= 85) return "text-ctp-green-400";
-  return "text-ctp-green-500";
+  if (score <= 10) return "text-ctp-red-600";
+  if (score <= 20) return "text-ctp-red-500";
+  if (score <= 30) return "text-ctp-red-400";
+  if (score <= 45) return "text-ctp-rosewater-600";
+  if (score <= 55) return "text-ctp-rosewater-500";
+  if (score <= 65) return "text-ctp-green-300";
+  if (score <= 75) return "text-ctp-green-400";
+  if (score <= 85) return "text-ctp-green-500";
+  return "text-ctp-green-600";
 }
 
 type TasteCompareStatsProps = {
@@ -33,7 +33,7 @@ export default function TasteCompareStats({ data, showAvatar = true }: TasteComp
       <div className="stat">
         {showAvatar ? (
           <div className="stat-figure text-secondary">
-            <Avatar src={data.target.avatar_url} username={data.target.username} size="sm" />
+            <Avatar src={data.target.avatar_url} username={data.target.username} size="md" />
           </div>
         ) : null}
         <div className="stat-title">Similarity</div>
@@ -52,13 +52,6 @@ export default function TasteCompareStats({ data, showAvatar = true }: TasteComp
         <div className="stat-value">{data.mean_abs_diff.toFixed(2)}</div>
         <div className="stat-desc text-ctp-subtext0">Average rating gap</div>
       </div>
-      {data.pearson != null ? (
-        <div className="stat">
-          <div className="stat-title">Pearson</div>
-          <div className="stat-value">{data.pearson.toFixed(2)}</div>
-          <div className="stat-desc text-ctp-subtext0">Correlation</div>
-        </div>
-      ) : null}
     </div>
   );
 }
