@@ -200,7 +200,7 @@ export default function ReviewsPanel({
                 ) : null}
               </SurfaceBadge>
 
-              {!myReview ? (
+              {!hasReviewText ? (
                 <Button onClick={startCreate} variant="primary">
                   Write a review
                 </Button>
